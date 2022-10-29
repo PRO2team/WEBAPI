@@ -1,6 +1,7 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
 using Webapi.Contexts;
+using Webapi.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
