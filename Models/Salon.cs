@@ -1,4 +1,5 @@
-﻿namespace Webapi.Models
+﻿using Webapi.Contexts;
+namespace Webapi.Models
 {
     public class Salon
     {
