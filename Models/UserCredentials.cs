@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using Webapi.Helpers;
 
 namespace Webapi.Models
@@ -21,3 +22,14 @@ namespace Webapi.Models
         public DateTime RefreshTokenExpirationDate { get; set; }
     }
 }
+=======
+﻿namespace Webapi.Models
+{
+    public class UserCredentials
+    {
+        public int UserCredentialsID { get; set; }
+        public string Email { get; set; }
+        public string PasswordHashed { get; set; }
+    }
+}
+>>>>>>> 885ce6c3f4ead2c34edf8f810e97aaa8db77b916

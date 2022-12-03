@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "dependencies": {
     "mssql1": {
@@ -6,4 +7,17 @@
       "dynamicId": null
     }
   }
+=======
+{
+  "dependencies": {
+    "secrets1": {
+      "type": "secrets"
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:DefaultConnection",
+      "dynamicId": null
+    }
+  }
+>>>>>>> 885ce6c3f4ead2c34edf8f810e97aaa8db77b916
 }
