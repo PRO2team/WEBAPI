@@ -14,6 +14,7 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.Description).IsRequired();
             builder.Property(e => e.OwnerPhoneNumber).IsRequired();
             builder.Property(e => e.WebsiteURL);
+            builder.Property(e => e.Picture);
 
             builder.HasOne(e => e.Address);
 

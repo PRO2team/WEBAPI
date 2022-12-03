@@ -45,6 +45,14 @@ namespace Webapi.Controllers
             return NotFound();
         }
 
+        public async Task<ActionResult<Review>> PostReview(Review review)
+        {
+            _dbContext.Reviews.Add(review);
+            await _dbContext.SaveChangesAsync();
+
+            return CreatedAtAction("GetReview", new { id = review.ReviewID }, review);
+        }
+
         [HttpPost]
         public ActionResult<Review> Add()
         {
@@ -53,7 +61,7 @@ namespace Webapi.Controllers
                 Rating = 5,
                 Comment = "Very cool",
                 PostedTimestamp = DateTime.Now,
-                Appointment = new Appointment() { CalendarAppointmentURL = "google.com", Date = DateTime.Now, IsConfirmed = true, AppointmentType = new AppointmentType() { LengthMinutes = 33, Name = "Haircut", Price = 55 }, User = new User() { Name = "Hlib", Surname = "Pivniev2", Birthdate = DateTime.Today.AddYears(-20), Selfie = new Picture() { Filepath = "E:/Pictures/defaultAvatar.png" }, UserCredentials = new UserCredentials() { Email = "gl.pvn2@gmail.com", PasswordHashed = "test123" } } }
+                Appointment = new Appointment() { CalendarAppointmentURL = "google.com", Date = DateTime.Now, IsConfirmed = true, AppointmentType = new AppointmentType() { LengthMinutes = 33, Name = "Haircut", Price = 55 }, User = new User() { Name = "Hlib", Surname = "Pivniev2", Birthdate = DateTime.Today.AddYears(-20) } }
             };
             _dbContext.Reviews.Add(review);
             _dbContext.SaveChanges();

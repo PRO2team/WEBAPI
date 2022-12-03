@@ -8,6 +8,7 @@ namespace Webapi.Models
         public string Description { get; set; }
         public string OwnerPhoneNumber { get; set; }
         public string WebsiteURL { get; set; }
+        public Picture Picture { get; set; }
         public Address Address { get; set; }
         public List<AppointmentType> AppointmentTypes { get; set; }
         public List<DayHours> OpenHours { get; set; }

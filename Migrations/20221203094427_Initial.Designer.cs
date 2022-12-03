@@ -12,7 +12,7 @@ using Webapi.Contexts;
 namespace Webapi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221016130249_Initial")]
+    [Migration("20221203094427_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -179,13 +179,26 @@ namespace Webapi.Migrations
                     b.Property<int?>("AppointmentTypeID")
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("Bytes")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Extension")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Filepath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserID")
+                        .HasColumnType("int");
+
                     b.HasKey("PictureID");
 
                     b.HasIndex("AppointmentTypeID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Pictures");
                 });
@@ -241,6 +254,9 @@ namespace Webapi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PictureID")
+                        .HasColumnType("int");
+
                     b.Property<string>("WebsiteURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -248,6 +264,8 @@ namespace Webapi.Migrations
                     b.HasKey("SalonID");
 
                     b.HasIndex("AddressID");
+
+                    b.HasIndex("PictureID");
 
                     b.ToTable("Salons");
                 });
@@ -267,9 +285,6 @@ namespace Webapi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SelfiePictureID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -278,8 +293,6 @@ namespace Webapi.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("UserID");
-
-                    b.HasIndex("SelfiePictureID");
 
                     b.HasIndex("UserCredentialsID");
 
@@ -294,11 +307,26 @@ namespace Webapi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserCredentialsID"), 1L, 1);
 
-                    b.Property<string>("Email")
+                    b.Property<string>("Login")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordHashed")
+                    b.Property<byte[]>("PasswordHashed")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("Salt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("UserRole")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -356,6 +384,10 @@ namespace Webapi.Migrations
                     b.HasOne("Webapi.Models.AppointmentType", null)
                         .WithMany("Pictures")
                         .HasForeignKey("AppointmentTypeID");
+
+                    b.HasOne("Webapi.Models.User", null)
+                        .WithMany("ProfilePictures")
+                        .HasForeignKey("UserID");
                 });
 
             modelBuilder.Entity("Webapi.Models.Review", b =>
@@ -377,24 +409,24 @@ namespace Webapi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Webapi.Models.Picture", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Address");
+
+                    b.Navigation("Picture");
                 });
 
             modelBuilder.Entity("Webapi.Models.User", b =>
                 {
-                    b.HasOne("Webapi.Models.Picture", "Selfie")
-                        .WithMany()
-                        .HasForeignKey("SelfiePictureID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Webapi.Models.UserCredentials", "UserCredentials")
                         .WithMany()
                         .HasForeignKey("UserCredentialsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Selfie");
 
                     b.Navigation("UserCredentials");
                 });
@@ -409,6 +441,11 @@ namespace Webapi.Migrations
                     b.Navigation("AppointmentTypes");
 
                     b.Navigation("OpenHours");
+                });
+
+            modelBuilder.Entity("Webapi.Models.User", b =>
+                {
+                    b.Navigation("ProfilePictures");
                 });
 #pragma warning restore 612, 618
         }

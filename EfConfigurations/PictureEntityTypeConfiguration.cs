@@ -10,7 +10,8 @@ namespace Webapi.EfConfigurations
         public void Configure(EntityTypeBuilder<Picture> builder)
         {
             builder.HasKey(e => e.PictureID);
-            builder.Property(e => e.Filepath).IsRequired();
+            builder.Property(e => e.Bytes).IsRequired();
+            builder.Property(e => e.Extension).IsRequired();
         }
     }
 }
