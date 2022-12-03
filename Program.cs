@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using Microsoft.EntityFrameworkCore;
 using Webapi.Contexts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -53,4 +54,37 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+=======
+﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
+using Webapi.Contexts;
+using Webapi.Controllers;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
+//builder.Services.AddDbContext<ApplicationDbContext>();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+>>>>>>> 885ce6c3f4ead2c34edf8f810e97aaa8db77b916
 app.Run();
