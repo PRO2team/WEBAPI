@@ -21,14 +21,12 @@ namespace Webapi.Controllers
             _context = context;
         }
 
-        // GET: api/AppointmentTypes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppointmentType>>> GetAppointmentTypes()
         {
             return await _context.AppointmentTypes.ToListAsync();
         }
 
-        // GET: api/AppointmentTypes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<AppointmentType>> GetAppointmentType(int id)
         {
@@ -42,8 +40,6 @@ namespace Webapi.Controllers
             return appointmentType;
         }
 
-        // PUT: api/AppointmentTypes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAppointmentType(int id, AppointmentType appointmentType)
         {
@@ -73,8 +69,6 @@ namespace Webapi.Controllers
             return NoContent();
         }
 
-        // POST: api/AppointmentTypes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<AppointmentType>> PostAppointmentType(AppointmentType appointmentType)
         {
@@ -84,7 +78,6 @@ namespace Webapi.Controllers
             return CreatedAtAction("GetAppointmentType", new { id = appointmentType.AppointmentTypeID }, appointmentType);
         }
 
-        // DELETE: api/AppointmentTypes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAppointmentType(int id)
         {

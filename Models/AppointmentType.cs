@@ -8,6 +8,6 @@ namespace Webapi.Models
         public string Name { get; set; }
         public int LengthMinutes { get; set; }
         public decimal Price { get; set; }
-        public List<Picture> Pictures { get; set; }
+        public virtual ICollection<Picture> Pictures { get; set; }
     }
 }

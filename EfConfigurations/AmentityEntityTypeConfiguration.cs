@@ -13,13 +13,7 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.Name).IsRequired();
 
             builder.HasOne(e => e.Icon);
-
-            builder.HasData(new Amentity()
-            {
-                AmentityID = 1,
-                Name = "Parking",
-                Icon = new Picture() { PictureID = 1, Filepath = "E:/Pictures/ParkingIcon.png"}
-            });
+            builder.Navigation(e => e.Icon).AutoInclude();
         }
     }
 }

@@ -15,16 +15,6 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.HouseNumber).IsRequired();
             builder.Property(e => e.FlatNumber);
             builder.Property(e => e.PostalCode).IsRequired();
-
-            builder.HasData(new Address()
-            {
-                AddressID = 1,
-                City = "Warsaw",
-                Street = "Jugoslowianska",
-                PostalCode = "04-125",
-                HouseNumber = "15D",
-                FlatNumber = "25A",
-            });
         }
     }
 }

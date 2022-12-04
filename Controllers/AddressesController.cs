@@ -22,14 +22,12 @@ namespace Webapi.Controllers
             _context = context;
         }
 
-        // GET: api/Addresses
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Address>>> GetAddresses()
         {
             return await _context.Addresses.ToListAsync();
         }
 
-        // GET: api/Addresses/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Address>> GetAddress(int id)
         {
@@ -43,8 +41,6 @@ namespace Webapi.Controllers
             return address;
         }
 
-        // PUT: api/Addresses/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAddress(int id, Address address)
         {
@@ -74,8 +70,6 @@ namespace Webapi.Controllers
             return NoContent();
         }
 
-        // POST: api/Addresses
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Address>> PostAddress(Address address)
         {
@@ -85,7 +79,6 @@ namespace Webapi.Controllers
             return CreatedAtAction("GetAddress", new { id = address.AddressID }, address);
         }
 
-        // DELETE: api/Addresses/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAddress(int id)
         {

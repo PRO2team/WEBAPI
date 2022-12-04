@@ -16,15 +16,7 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.PostedTimestamp).IsRequired();
 
             builder.HasOne(e => e.Appointment);
-
-            builder.HasData(new Review()
-            {
-                ReviewID = 1,
-                Rating = 5,
-                Comment = "Very cool",
-                PostedTimestamp = DateTime.Now,
-                Appointment = new Appointment() { AppointmentID = 2, CalendarAppointmentURL = "google.com", Date = DateTime.Now, IsConfirmed = true, AppointmentType = new AppointmentType() { AppointmentTypeID = 3, LengthMinutes = 33, Name = "Haircut", Price = 55 }, User = new User() { UserID = 2, Name = "Hlib", Surname = "Pivniev2", Birthdate = DateTime.Today.AddYears(-20) } }
-            });
+            builder.Navigation(e => e.Appointment).AutoInclude();
         }
     }
 }

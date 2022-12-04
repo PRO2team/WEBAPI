@@ -19,20 +19,20 @@ namespace Webapi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Review>> Get()
+        public ActionResult<IEnumerable<Review>> GetAppointments()
         {
             return Ok(_dbContext.Appointments);
         }
 
         [HttpGet("/{appointmentId}")]
-        public ActionResult<Review> Get(int appointmentId)
+        public ActionResult<Review> GetAppointment(int appointmentId)
         {
             _dbContext.Appointments.Load();
             return Ok(_dbContext.Appointments.FirstOrDefault(e => e.AppointmentID == appointmentId));
         }
         
         [HttpDelete("/{appointmentId}")]
-        public ActionResult<Review> Delete(int appointmentId)
+        public ActionResult<Review> DeleteAppointment(int appointmentId)
         {
             var appointmentToDelete = _dbContext.Appointments.FirstOrDefault(e => e.AppointmentID == appointmentId);
             if(appointmentToDelete != null)
@@ -45,27 +45,13 @@ namespace Webapi.Controllers
             return NotFound();
         }
 
-        public async Task<ActionResult<Review>> PostReview(Review review)
+        [HttpPost]
+        public async Task<ActionResult<Appointment>> PostAppointment(Appointment appointment)
         {
-            _dbContext.Reviews.Add(review);
+            _dbContext.Appointments.Add(appointment);
             await _dbContext.SaveChangesAsync();
 
-            return CreatedAtAction("GetReview", new { id = review.ReviewID }, review);
-        }
-
-        [HttpPost]
-        public ActionResult<Review> Add()
-        {
-            var review = new Review()
-            {
-                Rating = 5,
-                Comment = "Very cool",
-                PostedTimestamp = DateTime.Now,
-                Appointment = new Appointment() { CalendarAppointmentURL = "google.com", Date = DateTime.Now, IsConfirmed = true, AppointmentType = new AppointmentType() { LengthMinutes = 33, Name = "Haircut", Price = 55 }, User = new User() { Name = "Hlib", Surname = "Pivniev2", Birthdate = DateTime.Today.AddYears(-20) } }
-            };
-            _dbContext.Reviews.Add(review);
-            _dbContext.SaveChanges();
-            return Ok(_dbContext.Reviews.FirstOrDefault());
+            return CreatedAtAction("GetAppointment", new { id = appointment.AppointmentID }, appointment);
         }
     }
 }

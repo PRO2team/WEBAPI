@@ -14,15 +14,9 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.LengthMinutes).IsRequired();
             builder.Property(e => e.Price).IsRequired();
 
+            builder.Property(e => e.Pictures).IsRequired(false);
             builder.HasMany(e => e.Pictures);
-
-            builder.HasData(new AppointmentType()
-            {
-                AppointmentTypeID = 2,
-                LengthMinutes = 10,
-                Name = "Quick haircut",
-                Price = 30
-            });
+            builder.Navigation(e => e.Pictures).AutoInclude();
         }
     }
 }

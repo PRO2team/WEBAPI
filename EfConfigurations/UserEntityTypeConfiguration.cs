@@ -15,8 +15,10 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.Surname).IsRequired();
             builder.Property(e => e.Birthdate);
             builder.HasOne(e => e.UserCredentials);
+            builder.Navigation(e => e.UserCredentials).AutoInclude();
 
             builder.HasMany(c => c.ProfilePictures);
+            builder.Navigation(e => e.ProfilePictures).AutoInclude();
         }
     }
 }

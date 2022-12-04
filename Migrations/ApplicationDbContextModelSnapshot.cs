@@ -189,12 +189,17 @@ namespace Webapi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("SalonID")
+                        .HasColumnType("int");
+
                     b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("PictureID");
 
                     b.HasIndex("AppointmentTypeID");
+
+                    b.HasIndex("SalonID");
 
                     b.HasIndex("UserID");
 
@@ -252,9 +257,6 @@ namespace Webapi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PictureID")
-                        .HasColumnType("int");
-
                     b.Property<string>("WebsiteURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -262,8 +264,6 @@ namespace Webapi.Migrations
                     b.HasKey("SalonID");
 
                     b.HasIndex("AddressID");
-
-                    b.HasIndex("PictureID");
 
                     b.ToTable("Salons");
                 });
@@ -383,6 +383,10 @@ namespace Webapi.Migrations
                         .WithMany("Pictures")
                         .HasForeignKey("AppointmentTypeID");
 
+                    b.HasOne("Webapi.Models.Salon", null)
+                        .WithMany("Pictures")
+                        .HasForeignKey("SalonID");
+
                     b.HasOne("Webapi.Models.User", null)
                         .WithMany("ProfilePictures")
                         .HasForeignKey("UserID");
@@ -407,15 +411,7 @@ namespace Webapi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Webapi.Models.Picture", "Picture")
-                        .WithMany()
-                        .HasForeignKey("PictureID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Address");
-
-                    b.Navigation("Picture");
                 });
 
             modelBuilder.Entity("Webapi.Models.User", b =>
@@ -439,6 +435,8 @@ namespace Webapi.Migrations
                     b.Navigation("AppointmentTypes");
 
                     b.Navigation("OpenHours");
+
+                    b.Navigation("Pictures");
                 });
 
             modelBuilder.Entity("Webapi.Models.User", b =>

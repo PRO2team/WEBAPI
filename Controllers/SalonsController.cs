@@ -21,14 +21,12 @@ namespace Webapi.Controllers
             _context = context;
         }
 
-        // GET: api/Salons
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Salon>>> GetSalons()
         {
             return await _context.Salons.ToListAsync();
         }
 
-        // GET: api/Salons/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Salon>> GetSalon(int id)
         {
@@ -42,8 +40,6 @@ namespace Webapi.Controllers
             return salon;
         }
 
-        // PUT: api/Salons/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSalon(int id, Salon salon)
         {
@@ -73,18 +69,14 @@ namespace Webapi.Controllers
             return NoContent();
         }
 
-        // POST: api/Salons
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Salon>> PostSalon(Salon salon)
         {
             _context.Salons.Add(salon);
             await _context.SaveChangesAsync();
-
             return CreatedAtAction("GetSalon", new { id = salon.SalonID }, salon);
         }
 
-        // DELETE: api/Salons/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSalon(int id)
         {
