@@ -48,9 +48,14 @@ builder.Services.BuildServiceProvider().GetService<ApplicationDbContext>().Datab
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 
 
 var app = builder.Build();
+
+app.UseCors(
+    options => options.WithOrigins("http://localhost:3000").AllowAnyMethod()
+);
 
 app.UseExceptionLoggerMiddleware();
 app.UseDeveloperExceptionPage();
