@@ -11,9 +11,6 @@ namespace Webapi.EfConfigurations
         {
             builder.HasKey(e => e.AmentityID);
             builder.Property(e => e.Name).IsRequired();
-
-            builder.HasOne(e => e.Icon);
-            builder.Navigation(e => e.Icon).AutoInclude();
         }
     }
 }

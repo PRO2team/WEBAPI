@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Webapi.Models
+namespace Webapi.Models.Requests
 {
-    public class AppointmentType
+    public class AddAppointmentTypeRequest
     {
-        public int AppointmentTypeID { get; set; }
+        public int SalonID { get; set; }
         public string Name { get; set; }
         [Range(0, 1440)]
         public int LengthMinutes { get; set; }

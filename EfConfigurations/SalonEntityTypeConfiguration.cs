@@ -16,16 +16,11 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.WebsiteURL);
 
             builder.HasOne(e => e.Address);
-            builder.Navigation(e => e.Address).AutoInclude();
+            builder.HasOne(e => e.SalonPicture);
 
             builder.HasMany(e => e.AppointmentTypes);
-            builder.Navigation(e => e.AppointmentTypes).AutoInclude();
-
+            builder.HasMany(e => e.Amentities);
             builder.HasMany(e => e.OpenHours);
-            builder.Navigation(e => e.OpenHours).AutoInclude();
-
-            builder.HasMany(e => e.Pictures);
-            builder.Navigation(e => e.Pictures).AutoInclude();
         }
     }
 }

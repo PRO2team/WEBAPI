@@ -12,11 +12,11 @@ namespace Webapi.EfConfigurations
             builder.HasKey(e => e.AppointmentID);
             builder.Property(e => e.Date).IsRequired();
             builder.Property(e => e.IsConfirmed).IsRequired();
+            builder.Property(e => e.IsCanceled).IsRequired();
             builder.Property(e => e.CalendarAppointmentURL).IsRequired();
 
             builder.HasOne(e => e.AppointmentType);
-            builder.Navigation(e => e.AppointmentType).AutoInclude();
-            builder.Navigation(e => e.User).AutoInclude();
+            builder.HasOne(e => e.User);
         }
     }
 }

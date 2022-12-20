@@ -11,6 +11,7 @@ using Webapi.Contexts;
 using Webapi.Exceptions;
 using Webapi.Helpers;
 using Webapi.Models;
+using Webapi.Models.Requests;
 
 namespace Webapi.Controllers
 {
@@ -23,19 +24,19 @@ namespace Webapi.Controllers
 
         private const int SALT_LENGTH = 32; //bytes
 
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _dbContext;
         private readonly IConfiguration _config;
 
         public AccountsController(ApplicationDbContext context, IConfiguration config)
         {
-            _context = context;
+            _dbContext = context;
             _config = config;
         }
 
         [HttpPost("login")]
         public async Task<ActionResult> Login(LoginRequest loginRequest)
         {
-            User user = _context.Users.Include(e => e.UserCredentials).Where(user => user.UserCredentials.Login == loginRequest.Login).FirstOrDefault();
+            User user = _dbContext.Users.Include(e => e.UserCredentials).Where(user => user.UserCredentials.Login == loginRequest.Login).FirstOrDefault();
 
             if (user == default) return StatusCode(401, "No such user was found");
             if (!user.UserCredentials.PasswordHashed.SequenceEqual(loginRequest.Password.Encrypt(user.UserCredentials.Salt))) return StatusCode(401, "Wrong password");
@@ -44,8 +45,8 @@ namespace Webapi.Controllers
             var accessToken = GetNewJwtToken(creds, user);
 
             var refreshToken = user.RenewRefreshToken(REFRESH_TOKEN_LIFETIME);
-            _context.Update(user);
-            await _context.SaveChangesAsync();
+            _dbContext.Update(user);
+            await _dbContext.SaveChangesAsync();
 
             return Ok(new
             {
@@ -57,7 +58,7 @@ namespace Webapi.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterRequest registerRequest)
         {
-            User user = _context.Users.Include(e => e.UserCredentials).Where(user => user.UserCredentials.Login == registerRequest.Login).FirstOrDefault();
+            User user = _dbContext.Users.Include(e => e.UserCredentials).Where(user => user.UserCredentials.Login == registerRequest.Login).FirstOrDefault();
             if (user != default) return StatusCode(409, "Such user already exists");
             try
             {
@@ -69,15 +70,15 @@ namespace Webapi.Controllers
             }
 
 
-            await _context.AddAsync(user);
-            await _context.SaveChangesAsync();
+            await _dbContext.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
             return Ok();
         }
 
         [HttpPost("refresh")]
         public ActionResult RefreshAccessToken([FromHeader] string login, [FromHeader] byte[] refreshToken)
         {
-            User user = _context.Users.Include(e => e.UserCredentials).Where(user => user.UserCredentials.Login == login).FirstOrDefault();
+            User user = _dbContext.Users.Include(e => e.UserCredentials).Where(user => user.UserCredentials.Login == login).FirstOrDefault();
             if (user == default) return StatusCode(401, "No such user was found");
             if (!user.UserCredentials.RefreshToken.SequenceEqual(refreshToken)) return StatusCode(401, "Wrong refresh token");
             if (user.UserCredentials.RefreshTokenExpirationDate.CompareTo(DateTime.Now) < 0) return StatusCode(401, "Refresh token has expired");
@@ -86,6 +87,29 @@ namespace Webapi.Controllers
             var accessToken = GetNewJwtToken(creds, user);
 
             return Ok(new JwtSecurityTokenHandler().WriteToken(accessToken));
+        }
+
+        [HttpPost("picture/{userId}")]
+        public async Task<ActionResult<Salon>> AssignProfilePicture(int userId, Picture picture)
+        {
+            var user = await _dbContext.Users.IncludeAll().FirstOrDefaultAsync(e => e.UserID == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var currentProfilePicture = user.ProfilePicture;
+            user.ProfilePicture = picture;
+
+            if (currentProfilePicture != null)
+                _dbContext.Pictures.Remove(currentProfilePicture);
+
+            _dbContext.Entry(user).State = EntityState.Modified;
+
+            await _dbContext.SaveChangesAsync();
+
+            return NoContent();
         }
 
         #region Utility
@@ -110,7 +134,8 @@ namespace Webapi.Controllers
                 UserCredentials = newUserCredentials,
                 Name = registerRequest.Name,
                 Surname = registerRequest.Surname,
-                Birthdate = registerRequest.Birthdate
+                Birthdate = registerRequest.Birthdate,
+                PhoneNumber = registerRequest.PhoneNumber
             };
 
             return newUser;

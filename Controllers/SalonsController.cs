@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Webapi.Contexts;
+using Webapi.Helpers;
 using Webapi.Models;
+using Webapi.Models.Requests;
 
 namespace Webapi.Controllers
 {
@@ -14,23 +11,23 @@ namespace Webapi.Controllers
     [ApiController]
     public class SalonsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _dbContext;
 
         public SalonsController(ApplicationDbContext context)
         {
-            _context = context;
+            _dbContext = context;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Salon>>> GetSalons()
         {
-            return await _context.Salons.ToListAsync();
+            return await _dbContext.Salons.IncludeAll().ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Salon>> GetSalon(int id)
         {
-            var salon = await _context.Salons.FindAsync(id);
+            var salon = await _dbContext.Salons.IncludeAll().FirstOrDefaultAsync(e => e.SalonID == id);
 
             if (salon == null)
             {
@@ -41,18 +38,25 @@ namespace Webapi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSalon(int id, Salon salon)
+        public async Task<IActionResult> PutSalon(int id, AddSalonRequest addSalonRequest)
         {
-            if (id != salon.SalonID)
-            {
-                return BadRequest();
-            }
+            var salon = await _dbContext.Salons.IncludeAll().FirstOrDefaultAsync(e => e.SalonID == id);
 
-            _context.Entry(salon).State = EntityState.Modified;
+            if (salon is null) return NotFound();
+            if (addSalonRequest.Address is null || addSalonRequest.OpenHours is null || addSalonRequest.OpenHours.Any(e => e.DayName.IsDayOfWeek() == false)) return BadRequest();
+
+            salon.Name = addSalonRequest.Name;
+            salon.Description = addSalonRequest.Description;
+            salon.OwnerPhoneNumber = addSalonRequest.OwnerPhoneNumber;
+            salon.WebsiteURL = addSalonRequest.WebsiteURL;
+            salon.Address = addSalonRequest.Address;
+            salon.OpenHours = addSalonRequest.OpenHours;
+
+            _dbContext.Entry(salon).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -70,31 +74,82 @@ namespace Webapi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Salon>> PostSalon(Salon salon)
+        public async Task<ActionResult<Salon>> PostSalon(AddSalonRequest addSalonRequest)
         {
-            _context.Salons.Add(salon);
-            await _context.SaveChangesAsync();
+            if (addSalonRequest.Address is null || addSalonRequest.OpenHours is null || addSalonRequest.OpenHours.Any(e => e.DayName.IsDayOfWeek() == false)) return BadRequest();
+
+            var salon = new Salon()
+            {
+                Name = addSalonRequest.Name,
+                Description = addSalonRequest.Description,
+                OwnerPhoneNumber = addSalonRequest.OwnerPhoneNumber,
+                WebsiteURL = addSalonRequest.WebsiteURL,
+                Address = addSalonRequest.Address,
+                OpenHours = addSalonRequest.OpenHours,
+                AppointmentTypes = new List<AppointmentType>(),
+                Amentities = new List<Amentity>(),
+            };
+
+            _dbContext.Salons.Add(salon);
+            await _dbContext.SaveChangesAsync();
             return CreatedAtAction("GetSalon", new { id = salon.SalonID }, salon);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSalon(int id)
+        [HttpPost("picture/{salonId}")]
+        public async Task<ActionResult<Salon>> AssignSalonPicture(int salonId, Picture picture)
         {
-            var salon = await _context.Salons.FindAsync(id);
+            var salon = await _dbContext.Salons.IncludeAll().FirstOrDefaultAsync(e => e.SalonID == salonId);
+
             if (salon == null)
             {
                 return NotFound();
             }
 
-            _context.Salons.Remove(salon);
-            await _context.SaveChangesAsync();
+            var currentSalonPicture = salon.SalonPicture;
+            salon.SalonPicture = picture;
+
+            if(currentSalonPicture != null)
+                _dbContext.Pictures.Remove(currentSalonPicture);
+
+            _dbContext.Entry(salon).State = EntityState.Modified;
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SalonExists(salonId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSalon(int id)
+        {
+            var salon = await _dbContext.Salons.FindAsync(id);
+            if (salon == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Salons.Remove(salon);
+            await _dbContext.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool SalonExists(int id)
         {
-            return _context.Salons.Any(e => e.SalonID == id);
+            return _dbContext.Salons.Any(e => e.SalonID == id);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Metadata;
 using Webapi.Models;
 
 namespace Webapi.EfConfigurations
@@ -16,7 +15,6 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.PostedTimestamp).IsRequired();
 
             builder.HasOne(e => e.Appointment);
-            builder.Navigation(e => e.Appointment).AutoInclude();
         }
     }
 }

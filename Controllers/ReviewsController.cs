@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Webapi.Contexts;
+using Webapi.Helpers;
 using Webapi.Models;
+using Webapi.Models.Requests;
 
 namespace Webapi.Controllers
 {
@@ -15,23 +11,23 @@ namespace Webapi.Controllers
     [ApiController]
     public class ReviewsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _dbContext;
 
         public ReviewsController(ApplicationDbContext context)
         {
-            _context = context;
+            _dbContext = context;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Review>>> GetReviews()
         {
-            return await _context.Reviews.ToListAsync();
+            return await _dbContext.Reviews.IncludeAll().ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Review>> GetReview(int id)
         {
-            var review = await _context.Reviews.FindAsync(id);
+            var review = await _dbContext.Reviews.IncludeAll().FirstOrDefaultAsync(e => e.ReviewID == id);
 
             if (review == null)
             {
@@ -41,40 +37,25 @@ namespace Webapi.Controllers
             return review;
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutReview(int id, Review review)
-        {
-            if (id != review.ReviewID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(review).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReviewExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         [HttpPost]
-        public async Task<ActionResult<Review>> PostReview(Review review)
+        public async Task<ActionResult<Review>> PostReview(AddReviewRequest addReviewRequest)
         {
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
+            var appointment = await _dbContext.Appointments.FirstOrDefaultAsync(e => e.AppointmentID == addReviewRequest.AppointmentID);
+
+            if(appointment is null)
+            {
+                return NotFound();
+            }
+
+            var review = new Review()
+            {
+                PostedTimestamp = DateTime.Now,
+                Rating = addReviewRequest.Rating,
+                Comment = addReviewRequest.Comment,
+                Appointment = appointment
+            };
+            _dbContext.Reviews.Add(review);
+            await _dbContext.SaveChangesAsync();
 
             return CreatedAtAction("GetReview", new { id = review.ReviewID }, review);
         }
@@ -82,21 +63,16 @@ namespace Webapi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReview(int id)
         {
-            var review = await _context.Reviews.FindAsync(id);
+            var review = await _dbContext.Reviews.FindAsync(id);
             if (review == null)
             {
                 return NotFound();
             }
 
-            _context.Reviews.Remove(review);
-            await _context.SaveChangesAsync();
+            _dbContext.Reviews.Remove(review);
+            await _dbContext.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool ReviewExists(int id)
-        {
-            return _context.Reviews.Any(e => e.ReviewID == id);
         }
     }
 }

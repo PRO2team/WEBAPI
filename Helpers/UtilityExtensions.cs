@@ -6,7 +6,7 @@ using Webapi.Models;
 
 namespace Webapi.Helpers
 {
-    public static class Extensions
+    public static class UtilityExtensions
     {
         private const int ITERATIONS_COUNT = 5000;
         private const int KEY_BYTES_COUNT = 20;
@@ -19,6 +19,12 @@ namespace Webapi.Helpers
 
             var stringValueAttribute = fieldInfo.GetCustomAttribute<StringValueAttribute>();
             return stringValueAttribute?.StringValue;
+        }
+
+        public static bool IsDayOfWeek(this string stringValue)
+        {
+            var dayNames = new string[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+            return dayNames.Contains(stringValue);
         }
 
         public static byte[] Encrypt(this string @string, byte[] salt)

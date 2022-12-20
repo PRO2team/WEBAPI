@@ -1,4 +1,4 @@
-﻿namespace Webapi.Models
+﻿namespace Webapi.Models.Requests
 {
     public class LoginRequest
     {

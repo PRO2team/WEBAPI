@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Webapi.Models
+namespace Webapi.Models.Requests
 {
-    public class Review
+    public class AddReviewRequest
     {
-        public int ReviewID { get; set; }
+        public int AppointmentID { get; set; }
         public DateTime PostedTimestamp { get; set; }
-        [Range(0,5)]
+        [Range(0, 5)]
         public int Rating { get; set; }
         public string Comment { get; set; }
-        public Appointment Appointment { get; set; }
     }
 }
