@@ -1,9 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using Webapi.Models;
+﻿using Webapi.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Webapi.Helpers
@@ -15,7 +10,7 @@ namespace Webapi.Helpers
             return query
                 .Include(e => e.AppointmentTypes)
                 .Include(e => e.SalonPicture)
-                .Include(e => e.Amentities)
+                .Include(e => e.Amentities).ThenInclude(a => a.Icon)
                 .Include(e => e.OpenHours)
                 .Include(e => e.Address);
         } 
@@ -24,20 +19,20 @@ namespace Webapi.Helpers
         {
             return query
                 .Include(e => e.AppointmentType)
-                .Include(e => e.User);
+                .Include(e => e.User).ThenInclude(u => u.ProfilePicture);
         }  
         
         public static IQueryable<User> IncludeAll(this IQueryable<User> query)
         {
             return query
-                .Include(e => e.UserCredentials)
                 .Include(e => e.ProfilePicture);
         } 
         
         public static IQueryable<Review> IncludeAll(this IQueryable<Review> query)
         {
             return query
-                .Include(e => e.Appointment);
+                .Include(e => e.Appointment).ThenInclude(a => a.AppointmentType)
+                .Include(e => e.Appointment).ThenInclude(a => a.User).ThenInclude(u => u.ProfilePicture);
         }   
     }
 }
