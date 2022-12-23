@@ -89,29 +89,6 @@ namespace Webapi.Controllers
             return Ok(new JwtSecurityTokenHandler().WriteToken(accessToken));
         }
 
-        [HttpPost("picture/{userId}")]
-        public async Task<ActionResult<Salon>> AssignProfilePicture(int userId, Picture picture)
-        {
-            var user = await _dbContext.Users.IncludeAll().FirstOrDefaultAsync(e => e.UserID == userId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var currentProfilePicture = user.ProfilePicture;
-            user.ProfilePicture = picture;
-
-            if (currentProfilePicture != null)
-                _dbContext.Pictures.Remove(currentProfilePicture);
-
-            _dbContext.Entry(user).State = EntityState.Modified;
-
-            await _dbContext.SaveChangesAsync();
-
-            return NoContent();
-        }
-
         #region Utility
         private static User CreateUser(RegisterRequest registerRequest)
         {

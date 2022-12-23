@@ -8,10 +8,11 @@ namespace Webapi.Contexts
         public DbSet<AppointmentType> AppointmentTypes { get; set; }
         public DbSet<UserCredentials> UserCredentials { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<DayHours> DayHours { get; set; }
+        public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Amentity> Amentities { get; set; }
-        public DbSet<Picture> Pictures { get; set; }
+        public DbSet<DayHours> DayHours { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<Picture> Pictures { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Salon> Salons { get; set; }
         public DbSet<User> Users { get; set; }

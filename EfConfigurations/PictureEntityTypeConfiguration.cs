@@ -11,7 +11,6 @@ namespace Webapi.EfConfigurations
         {
             builder.HasKey(e => e.PictureID);
             builder.Property(e => e.Bytes).IsRequired();
-            builder.Property(e => e.Filename).IsRequired();
         }
     }
 }

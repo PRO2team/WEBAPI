@@ -43,7 +43,7 @@ namespace Webapi.Controllers
             var salon = await _dbContext.Salons.IncludeAll().FirstOrDefaultAsync(e => e.SalonID == id);
 
             if (salon is null) return NotFound();
-            if (addSalonRequest.Address is null || addSalonRequest.OpenHours is null || addSalonRequest.OpenHours.Any(e => e.DayName.IsDayOfWeek() == false)) return BadRequest();
+            if (addSalonRequest.OpenHours.Any(e => e.DayName.IsDayOfWeek() == false)) return BadRequest("Uknown day of the week" + Environment.NewLine + $"Possible values: {string.Join(',', UtilityExtensions.daysOfWeekNames)}");
 
             salon.Name = addSalonRequest.Name;
             salon.Description = addSalonRequest.Description;
@@ -76,7 +76,7 @@ namespace Webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<Salon>> PostSalon(AddSalonRequest addSalonRequest)
         {
-            if (addSalonRequest.Address is null || addSalonRequest.OpenHours is null || addSalonRequest.OpenHours.Any(e => e.DayName.IsDayOfWeek() == false)) return BadRequest();
+            if (addSalonRequest.OpenHours.Any(e => e.DayName.IsDayOfWeek() == false)) return BadRequest("Uknown day of the week" + Environment.NewLine + $"Possible values: {string.Join(',', UtilityExtensions.daysOfWeekNames)}");
 
             var salon = new Salon()
             {
@@ -93,43 +93,6 @@ namespace Webapi.Controllers
             _dbContext.Salons.Add(salon);
             await _dbContext.SaveChangesAsync();
             return CreatedAtAction("GetSalon", new { id = salon.SalonID }, salon);
-        }
-
-        [HttpPost("picture/{salonId}")]
-        public async Task<ActionResult<Salon>> AssignSalonPicture(int salonId, Picture picture)
-        {
-            var salon = await _dbContext.Salons.IncludeAll().FirstOrDefaultAsync(e => e.SalonID == salonId);
-
-            if (salon == null)
-            {
-                return NotFound();
-            }
-
-            var currentSalonPicture = salon.SalonPicture;
-            salon.SalonPicture = picture;
-
-            if(currentSalonPicture != null)
-                _dbContext.Pictures.Remove(currentSalonPicture);
-
-            _dbContext.Entry(salon).State = EntityState.Modified;
-
-            try
-            {
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SalonExists(salonId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         [HttpDelete("{id}")]

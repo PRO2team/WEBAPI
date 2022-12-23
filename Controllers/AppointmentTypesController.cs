@@ -21,13 +21,13 @@ namespace Webapi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppointmentType>>> GetAppointmentTypes()
         {
-            return await _dbContext.AppointmentTypes.ToListAsync();
+            return await _dbContext.AppointmentTypes.IncludeAll().ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<AppointmentType>> GetAppointmentType(int id)
         {
-            var appointmentType = await _dbContext.AppointmentTypes.FirstOrDefaultAsync(e => e.AppointmentTypeID == id);
+            var appointmentType = await _dbContext.AppointmentTypes.IncludeAll().FirstOrDefaultAsync(e => e.AppointmentTypeID == id);
 
             if (appointmentType == null)
             {
@@ -40,7 +40,7 @@ namespace Webapi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAppointmentType(int id, AppointmentType appointmentType)
         {
-            var appointmentTypeToModify = await _dbContext.AppointmentTypes.FirstOrDefaultAsync(e => e.AppointmentTypeID == id);
+            var appointmentTypeToModify = await _dbContext.AppointmentTypes.IncludeAll().FirstOrDefaultAsync(e => e.AppointmentTypeID == id);
 
             if (appointmentTypeToModify == null)
             {

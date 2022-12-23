@@ -32,13 +32,26 @@ namespace Webapi.Migrations
                 {
                     PictureID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Bytes = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    Filename = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Filepath = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Bytes = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pictures", x => x.PictureID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Promotions",
+                columns: table => new
+                {
+                    PromotionID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DiscountInPercent = table.Column<int>(type: "int", nullable: false),
+                    DateFrom = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateTo = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Promotions", x => x.PromotionID);
                 });
 
             migrationBuilder.CreateTable(
@@ -153,11 +166,17 @@ namespace Webapi.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LengthMinutes = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PromotionID = table.Column<int>(type: "int", nullable: true),
                     SalonID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppointmentTypes", x => x.AppointmentTypeID);
+                    table.ForeignKey(
+                        name: "FK_AppointmentTypes_Promotions_PromotionID",
+                        column: x => x.PromotionID,
+                        principalTable: "Promotions",
+                        principalColumn: "PromotionID");
                     table.ForeignKey(
                         name: "FK_AppointmentTypes_Salons_SalonID",
                         column: x => x.SalonID,
@@ -259,6 +278,11 @@ namespace Webapi.Migrations
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppointmentTypes_PromotionID",
+                table: "AppointmentTypes",
+                column: "PromotionID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AppointmentTypes_SalonID",
                 table: "AppointmentTypes",
                 column: "SalonID");
@@ -313,6 +337,9 @@ namespace Webapi.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Promotions");
 
             migrationBuilder.DropTable(
                 name: "Salons");

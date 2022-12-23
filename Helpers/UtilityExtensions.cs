@@ -8,6 +8,7 @@ namespace Webapi.Helpers
 {
     public static class UtilityExtensions
     {
+        public static readonly string[] daysOfWeekNames = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
         private const int ITERATIONS_COUNT = 5000;
         private const int KEY_BYTES_COUNT = 20;
 
@@ -23,8 +24,7 @@ namespace Webapi.Helpers
 
         public static bool IsDayOfWeek(this string stringValue)
         {
-            var dayNames = new string[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
-            return dayNames.Contains(stringValue);
+            return daysOfWeekNames.Contains(stringValue);
         }
 
         public static byte[] Encrypt(this string @string, byte[] salt)

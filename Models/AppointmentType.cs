@@ -10,5 +10,6 @@ namespace Webapi.Models
         public int LengthMinutes { get; set; }
         [Range(0, 10000)]
         public decimal Price { get; set; }
+        public Promotion? Promotion { get; set; }
     }
 }

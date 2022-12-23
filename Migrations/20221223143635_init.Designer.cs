@@ -12,7 +12,7 @@ using Webapi.Contexts;
 namespace Webapi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221220214301_init")]
+    [Migration("20221223143635_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -137,10 +137,15 @@ namespace Webapi.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("PromotionID")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SalonID")
                         .HasColumnType("int");
 
                     b.HasKey("AppointmentTypeID");
+
+                    b.HasIndex("PromotionID");
 
                     b.HasIndex("SalonID");
 
@@ -187,16 +192,31 @@ namespace Webapi.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("Filename")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Filepath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("PictureID");
 
                     b.ToTable("Pictures");
+                });
+
+            modelBuilder.Entity("Webapi.Models.Promotion", b =>
+                {
+                    b.Property<int>("PromotionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PromotionID"), 1L, 1);
+
+                    b.Property<DateTime>("DateFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateTo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DiscountInPercent")
+                        .HasColumnType("int");
+
+                    b.HasKey("PromotionID");
+
+                    b.ToTable("Promotions");
                 });
 
             modelBuilder.Entity("Webapi.Models.Review", b =>
@@ -376,9 +396,15 @@ namespace Webapi.Migrations
 
             modelBuilder.Entity("Webapi.Models.AppointmentType", b =>
                 {
+                    b.HasOne("Webapi.Models.Promotion", "Promotion")
+                        .WithMany()
+                        .HasForeignKey("PromotionID");
+
                     b.HasOne("Webapi.Models.Salon", null)
                         .WithMany("AppointmentTypes")
                         .HasForeignKey("SalonID");
+
+                    b.Navigation("Promotion");
                 });
 
             modelBuilder.Entity("Webapi.Models.DayHours", b =>

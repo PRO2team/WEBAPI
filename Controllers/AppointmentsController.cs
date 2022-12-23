@@ -86,10 +86,6 @@ namespace Webapi.Controllers
             {
                 return NotFound();
             }
-            if (appointmentId != appointment.AppointmentID)
-            {
-                return BadRequest();
-            }
 
             appointment.IsConfirmed = true;
             _dbContext.Entry(appointment).State = EntityState.Modified;
@@ -120,10 +116,6 @@ namespace Webapi.Controllers
             if (appointment is null)
             {
                 return NotFound();
-            }
-            if (appointmentId != appointment.AppointmentID)
-            {
-                return BadRequest();
             }
 
             appointment.IsCanceled = true;

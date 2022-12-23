@@ -12,6 +12,8 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.Name).IsRequired();
             builder.Property(e => e.LengthMinutes).IsRequired();
             builder.Property(e => e.Price).IsRequired();
+
+            builder.HasOne(e => e.Promotion);
         }
     }
 }
