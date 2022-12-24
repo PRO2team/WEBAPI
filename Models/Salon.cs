@@ -1,4 +1,6 @@
-﻿using Webapi.Contexts;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using Webapi.Contexts;
 namespace Webapi.Models
 {
     public class Salon
@@ -8,6 +10,7 @@ namespace Webapi.Models
             AppointmentTypes = new List<AppointmentType>();
             Amentities = new List<Amentity>();
             OpenHours = new List<DayHours>();
+            Reviews = new List<Review>();
         }
 
         public int SalonID { get; set; }
@@ -20,5 +23,6 @@ namespace Webapi.Models
         public virtual ICollection<AppointmentType> AppointmentTypes { get; set; }
         public virtual ICollection<Amentity> Amentities { get; set; }
         public virtual ICollection<DayHours> OpenHours { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
     }
 }

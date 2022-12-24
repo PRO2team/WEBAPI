@@ -12,6 +12,7 @@ namespace Webapi.Helpers
                 .Include(e => e.SalonPicture)
                 .Include(e => e.Amentities).ThenInclude(a => a.Icon)
                 .Include(e => e.OpenHours)
+                .Include(e => e.Reviews).ThenInclude(r => r.User).ThenInclude(u => u.ProfilePicture)
                 .Include(e => e.Address);
         } 
         
@@ -20,21 +21,14 @@ namespace Webapi.Helpers
             return query
                 .Include(e => e.AppointmentType).ThenInclude(at => at.Promotion)
                 .Include(e => e.User).ThenInclude(u => u.ProfilePicture);
-        }  
-        
-        public static IQueryable<User> IncludeAll(this IQueryable<User> query)
-        {
-            return query
-                .Include(e => e.ProfilePicture);
-        } 
+        }         
         
         public static IQueryable<Review> IncludeAll(this IQueryable<Review> query)
         {
             return query
-                .Include(e => e.Appointment).ThenInclude(a => a.AppointmentType).ThenInclude(at => at.Promotion)
-                .Include(e => e.Appointment).ThenInclude(a => a.User).ThenInclude(u => u.ProfilePicture);
-        }   
-        
+                .Include(e => e.User).ThenInclude(u => u.ProfilePicture);
+        }  
+
         public static IQueryable<AppointmentType> IncludeAll(this IQueryable<AppointmentType> query)
         {
             return query

@@ -51,7 +51,14 @@ namespace Webapi.Controllers
             return Ok(new
             {
                 accessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
-                refreshToken = refreshToken
+                user.UserCredentials.Login,
+                user.UserCredentials.UserRole,
+                user.Name,
+                user.Surname,
+                user.PhoneNumber,
+                user.TotalSpent,
+                user.Birthdate,
+                user.ProfilePicture
             });
         }
 
@@ -63,16 +70,19 @@ namespace Webapi.Controllers
             try
             {
                 user = CreateUser(registerRequest);
+
+                await _dbContext.AddAsync(user);
+                await _dbContext.SaveChangesAsync();
             }
             catch (UndefinedUserRoleException)
             {
                 return StatusCode(422, "Undefined user role occured");
+            }catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
             }
 
-
-            await _dbContext.AddAsync(user);
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            return Ok(user);
         }
 
         [HttpPost("refresh")]

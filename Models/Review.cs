@@ -9,6 +9,6 @@ namespace Webapi.Models
         [Range(0,5)]
         public int Rating { get; set; }
         public string Comment { get; set; }
-        public Appointment Appointment { get; set; }
+        public User User { get; set; }
     }
 }

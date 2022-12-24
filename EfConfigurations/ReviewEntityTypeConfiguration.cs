@@ -14,7 +14,7 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.Comment).IsRequired();
             builder.Property(e => e.PostedTimestamp).IsRequired();
 
-            builder.HasOne(e => e.Appointment);
+            builder.HasOne(e => e.User);
         }
     }
 }

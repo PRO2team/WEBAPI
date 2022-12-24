@@ -40,9 +40,16 @@ namespace Webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<Review>> PostReview(AddReviewRequest addReviewRequest)
         {
-            var appointment = await _dbContext.Appointments.FirstOrDefaultAsync(e => e.AppointmentID == addReviewRequest.AppointmentID);
+            var salon = await _dbContext.Salons.FirstOrDefaultAsync(e => e.SalonID == addReviewRequest.SalonID);
 
-            if(appointment is null)
+            if(salon is null)
+            {
+                return NotFound();
+            }       
+            
+            var user = await _dbContext.Users.FirstOrDefaultAsync(e => e.UserID == addReviewRequest.UserID);
+
+            if(user is null)
             {
                 return NotFound();
             }
@@ -52,9 +59,12 @@ namespace Webapi.Controllers
                 PostedTimestamp = DateTime.Now,
                 Rating = addReviewRequest.Rating,
                 Comment = addReviewRequest.Comment,
-                Appointment = appointment
+                User = user
             };
-            _dbContext.Reviews.Add(review);
+
+            salon.Reviews.Add(review);
+            _dbContext.Entry(salon).State = EntityState.Modified;
+
             await _dbContext.SaveChangesAsync();
 
             return CreatedAtAction("GetReview", new { id = review.ReviewID }, review);

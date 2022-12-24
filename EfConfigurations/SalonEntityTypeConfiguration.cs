@@ -21,6 +21,7 @@ namespace Webapi.EfConfigurations
             builder.HasMany(e => e.AppointmentTypes);
             builder.HasMany(e => e.Amentities);
             builder.HasMany(e => e.OpenHours);
+            builder.HasMany(e => e.Reviews);
         }
     }
 }

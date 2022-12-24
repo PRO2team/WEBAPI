@@ -225,9 +225,6 @@ namespace Webapi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReviewID"), 1L, 1);
 
-                    b.Property<int>("AppointmentID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Comment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -238,9 +235,17 @@ namespace Webapi.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SalonID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
                     b.HasKey("ReviewID");
 
-                    b.HasIndex("AppointmentID");
+                    b.HasIndex("SalonID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Reviews");
                 });
@@ -414,13 +419,17 @@ namespace Webapi.Migrations
 
             modelBuilder.Entity("Webapi.Models.Review", b =>
                 {
-                    b.HasOne("Webapi.Models.Appointment", "Appointment")
+                    b.HasOne("Webapi.Models.Salon", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("SalonID");
+
+                    b.HasOne("Webapi.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("AppointmentID")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Appointment");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Webapi.Models.Salon", b =>
@@ -464,6 +473,8 @@ namespace Webapi.Migrations
                     b.Navigation("AppointmentTypes");
 
                     b.Navigation("OpenHours");
+
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

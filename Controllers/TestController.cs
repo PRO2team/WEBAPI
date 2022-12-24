@@ -25,6 +25,7 @@ namespace Webapi.Controllers
         [HttpPost]
         public async Task<ActionResult> FulfillDatabaseWithTestData()
         {
+            var user1 = CreateUser();
             var salon1 = new Salon()
             {
                 Name = "Don Capelli",
@@ -115,26 +116,30 @@ namespace Webapi.Controllers
                         OpenTime = DateTime.ParseExact("19000101T07:00", "yyyyMMddTHH:mm", null),
                         CloseTime = DateTime.ParseExact("19000101T19:00", "yyyyMMddTHH:mm", null)
                     }
+                },
+                Reviews = new List<Review>()
+                {
+                    new Review()
+                    {
+                        PostedTimestamp = DateTime.Today,
+                        Comment = "Decent",
+                        Rating = 4,
+                        User = user1
+                    }
                 }
             };
 
-            var review = new Review()
+            var appointment = new Appointment()
             {
-                Appointment = new Appointment()
-                {
-                    Date = DateTime.Today,
-                    IsConfirmed = true,
-                    CalendarAppointmentURL = "todo",
-                    AppointmentType = salon1.AppointmentTypes.First(),
-                    User = CreateUser()
-                },
-                PostedTimestamp = DateTime.Today,
-                Comment = "Decent",
-                Rating = 4
+                Date = DateTime.Today,
+                IsConfirmed = true,
+                CalendarAppointmentURL = "todo",
+                AppointmentType = salon1.AppointmentTypes.First(),
+                User = user1
             };
 
             _dbContext.Salons.Add(salon1);
-            _dbContext.Reviews.Add(review);
+            _dbContext.Appointments.Add(appointment);
 
             await _dbContext.SaveChangesAsync();
 
