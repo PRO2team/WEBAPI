@@ -31,6 +31,7 @@ namespace Webapi.Models
             AppointmentTypes = new List<AppointmentType>();
             Amentities = new List<Amentity>();
             OpenHours = new List<DayHours>();
+            Portfolio = new List<Picture>();
             Reviews = new List<Review>();
         }
 
@@ -42,6 +43,7 @@ namespace Webapi.Models
         public string SalonType { get; set; }
         public Address Address { get; set; }
         public virtual Picture? SalonPicture { get; set; }
+        public virtual ICollection<Picture> Portfolio { get; set; }
         public virtual ICollection<AppointmentType> AppointmentTypes { get; set; }
         public virtual ICollection<Amentity> Amentities { get; set; }
         public virtual ICollection<DayHours> OpenHours { get; set; }

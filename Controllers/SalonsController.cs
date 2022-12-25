@@ -94,7 +94,8 @@ namespace Webapi.Controllers
                 OpenHours = addSalonRequest.OpenHours,
                 AppointmentTypes = new List<AppointmentType>(),
                 Amentities = new List<Amentity>(),
-                Reviews = new List<Review>(),
+                Portfolio = new List<Picture>(),
+                Reviews = new List<Review>()
             };
 
             _dbContext.Salons.Add(salon);

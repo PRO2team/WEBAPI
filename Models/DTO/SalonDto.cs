@@ -18,6 +18,7 @@
             Amentities = salon.Amentities;
             OpenHours = salon.OpenHours;
             Reviews = salon.Reviews;
+            Portfolio = salon.Portfolio;
         }
 
         public int SalonID { get; set; }
@@ -34,6 +35,7 @@
         public virtual ICollection<Amentity> Amentities { get; set; }
         public virtual ICollection<DayHours> OpenHours { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
+        public virtual ICollection<Picture> Portfolio { get; set; }
 
     }
 }

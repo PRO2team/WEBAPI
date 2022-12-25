@@ -12,7 +12,7 @@ using Webapi.Contexts;
 namespace Webapi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221225115522_init")]
+    [Migration("20221225211643_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -192,7 +192,12 @@ namespace Webapi.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<int?>("SalonID")
+                        .HasColumnType("int");
+
                     b.HasKey("PictureID");
+
+                    b.HasIndex("SalonID");
 
                     b.ToTable("Pictures");
                 });
@@ -282,6 +287,9 @@ namespace Webapi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserID")
+                        .HasColumnType("int");
+
                     b.Property<string>("WebsiteURL")
                         .HasColumnType("nvarchar(max)");
 
@@ -290,6 +298,8 @@ namespace Webapi.Migrations
                     b.HasIndex("AddressID");
 
                     b.HasIndex("SalonPicturePictureID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Salons");
                 });
@@ -423,6 +433,13 @@ namespace Webapi.Migrations
                         .HasForeignKey("SalonID");
                 });
 
+            modelBuilder.Entity("Webapi.Models.Picture", b =>
+                {
+                    b.HasOne("Webapi.Models.Salon", null)
+                        .WithMany("Portfolio")
+                        .HasForeignKey("SalonID");
+                });
+
             modelBuilder.Entity("Webapi.Models.Review", b =>
                 {
                     b.HasOne("Webapi.Models.Salon", null)
@@ -449,6 +466,10 @@ namespace Webapi.Migrations
                     b.HasOne("Webapi.Models.Picture", "SalonPicture")
                         .WithMany()
                         .HasForeignKey("SalonPicturePictureID");
+
+                    b.HasOne("Webapi.Models.User", null)
+                        .WithMany("FavouriteSalons")
+                        .HasForeignKey("UserID");
 
                     b.Navigation("Address");
 
@@ -485,7 +506,14 @@ namespace Webapi.Migrations
 
                     b.Navigation("OpenHours");
 
+                    b.Navigation("Portfolio");
+
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("Webapi.Models.User", b =>
+                {
+                    b.Navigation("FavouriteSalons");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,7 +9,9 @@ namespace Webapi.Models
             [StringValue(nameof(Admin))]
             Admin,
             [StringValue(nameof(User))]
-            User
+            User,
+            [StringValue(nameof(Owner))]
+            Owner
         }
 
         public int UserCredentialsID { get; set; }

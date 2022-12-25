@@ -11,6 +11,7 @@ using Webapi.Contexts;
 using Webapi.Exceptions;
 using Webapi.Helpers;
 using Webapi.Models;
+using Webapi.Models.DTO;
 using Webapi.Models.Requests;
 
 namespace Webapi.Controllers
@@ -31,6 +32,91 @@ namespace Webapi.Controllers
         {
             _dbContext = context;
             _config = config;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        {
+            return await _dbContext.Users.IncludeAll().ToListAsync();
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<UserDto>> GetUser(int userId)
+        {
+            var user = await _dbContext.Users.IncludeAll().FirstOrDefaultAsync(e => e.UserID == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var favSalons = _dbContext.Salons
+                .Include(e => e.AppointmentTypes)
+                .Include(e => e.SalonPicture)
+                .Include(e => e.Reviews)
+                .Include(e => e.Address)
+            .Where(e => user.FavouriteSalons.Select(e => e.SalonID).Contains(e.SalonID)).Select(e => new SalonDto(e)).ToList();
+            var userDto = new UserDto(user);
+            userDto.FavouriteSalons = favSalons;
+
+            return userDto;
+        }
+
+        [HttpPost("favourites/{userId}/{salonId}")]
+        public async Task<ActionResult<User>> FavouritesAddSalon(int userId, int salonId)
+        {
+            var user = await _dbContext.Users.IncludeAll().FirstOrDefaultAsync(e => e.UserID == userId);
+            if (user == null)
+            {
+                return NotFound($"User id {userId} could not be found");
+            }
+
+            var salon = await _dbContext.Salons.FirstOrDefaultAsync(e => e.SalonID == salonId);
+            if (salon == null)
+            {
+                return NotFound($"Salon id {salonId} could not be found");
+            }
+
+            if(user.FavouriteSalons.Any(e => e.SalonID == salonId))
+            {
+                return StatusCode(409, "Such salon has already been added to favourites");
+            }
+
+            user.FavouriteSalons.Add(salon);
+
+            _dbContext.Entry(user).State = EntityState.Modified;
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+        
+        [HttpDelete("favourites/{userId}/{salonId}")]
+        public async Task<ActionResult<User>> FavouritesDeleteSalon(int userId, int salonId)
+        {
+            var user = await _dbContext.Users.IncludeAll().FirstOrDefaultAsync(e => e.UserID == userId);
+            if (user == null)
+            {
+                return NotFound($"User id {userId} could not be found");
+            }
+
+            var salon = await _dbContext.Salons.FirstOrDefaultAsync(e => e.SalonID == salonId);
+            if (salon == null)
+            {
+                return NotFound($"Salon id {salonId} could not be found");
+            }
+
+            if(!user.FavouriteSalons.Any(e => e.SalonID == salonId))
+            {
+                return NotFound("User does not have such a salon on the favorites list");
+            }
+
+            user.FavouriteSalons.Remove(salon);
+
+            _dbContext.Entry(user).State = EntityState.Modified;
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpPost("login")]

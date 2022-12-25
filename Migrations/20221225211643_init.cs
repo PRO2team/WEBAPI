@@ -27,19 +27,6 @@ namespace Webapi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Pictures",
-                columns: table => new
-                {
-                    PictureID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Bytes = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pictures", x => x.PictureID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Promotions",
                 columns: table => new
                 {
@@ -73,33 +60,88 @@ namespace Webapi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Salons",
+                name: "Amentities",
                 columns: table => new
                 {
-                    SalonID = table.Column<int>(type: "int", nullable: false)
+                    AmentityID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OwnerPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WebsiteURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SalonType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddressID = table.Column<int>(type: "int", nullable: false),
-                    SalonPicturePictureID = table.Column<int>(type: "int", nullable: true)
+                    IconPictureID = table.Column<int>(type: "int", nullable: false),
+                    SalonID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Salons", x => x.SalonID);
+                    table.PrimaryKey("PK_Amentities", x => x.AmentityID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Appointments",
+                columns: table => new
+                {
+                    AppointmentID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    IsCanceled = table.Column<bool>(type: "bit", nullable: false),
+                    CalendarAppointmentURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AppointmentTypeID = table.Column<int>(type: "int", nullable: false),
+                    UserID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Appointments", x => x.AppointmentID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppointmentTypes",
+                columns: table => new
+                {
+                    AppointmentTypeID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LengthMinutes = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PromotionID = table.Column<int>(type: "int", nullable: true),
+                    SalonID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppointmentTypes", x => x.AppointmentTypeID);
                     table.ForeignKey(
-                        name: "FK_Salons_Addresses_AddressID",
-                        column: x => x.AddressID,
-                        principalTable: "Addresses",
-                        principalColumn: "AddressID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Salons_Pictures_SalonPicturePictureID",
-                        column: x => x.SalonPicturePictureID,
-                        principalTable: "Pictures",
-                        principalColumn: "PictureID");
+                        name: "FK_AppointmentTypes_Promotions_PromotionID",
+                        column: x => x.PromotionID,
+                        principalTable: "Promotions",
+                        principalColumn: "PromotionID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DayHours",
+                columns: table => new
+                {
+                    DayHoursID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OpenTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CloseTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SalonID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DayHours", x => x.DayHoursID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Pictures",
+                columns: table => new
+                {
+                    PictureID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Bytes = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    SalonID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pictures", x => x.PictureID);
                 });
 
             migrationBuilder.CreateTable(
@@ -133,77 +175,39 @@ namespace Webapi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Amentities",
+                name: "Salons",
                 columns: table => new
                 {
-                    AmentityID = table.Column<int>(type: "int", nullable: false)
+                    SalonID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IconPictureID = table.Column<int>(type: "int", nullable: false),
-                    SalonID = table.Column<int>(type: "int", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OwnerPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WebsiteURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SalonType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressID = table.Column<int>(type: "int", nullable: false),
+                    SalonPicturePictureID = table.Column<int>(type: "int", nullable: true),
+                    UserID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Amentities", x => x.AmentityID);
+                    table.PrimaryKey("PK_Salons", x => x.SalonID);
                     table.ForeignKey(
-                        name: "FK_Amentities_Pictures_IconPictureID",
-                        column: x => x.IconPictureID,
-                        principalTable: "Pictures",
-                        principalColumn: "PictureID",
+                        name: "FK_Salons_Addresses_AddressID",
+                        column: x => x.AddressID,
+                        principalTable: "Addresses",
+                        principalColumn: "AddressID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Amentities_Salons_SalonID",
-                        column: x => x.SalonID,
-                        principalTable: "Salons",
-                        principalColumn: "SalonID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppointmentTypes",
-                columns: table => new
-                {
-                    AppointmentTypeID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LengthMinutes = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PromotionID = table.Column<int>(type: "int", nullable: true),
-                    SalonID = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppointmentTypes", x => x.AppointmentTypeID);
+                        name: "FK_Salons_Pictures_SalonPicturePictureID",
+                        column: x => x.SalonPicturePictureID,
+                        principalTable: "Pictures",
+                        principalColumn: "PictureID");
                     table.ForeignKey(
-                        name: "FK_AppointmentTypes_Promotions_PromotionID",
-                        column: x => x.PromotionID,
-                        principalTable: "Promotions",
-                        principalColumn: "PromotionID");
-                    table.ForeignKey(
-                        name: "FK_AppointmentTypes_Salons_SalonID",
-                        column: x => x.SalonID,
-                        principalTable: "Salons",
-                        principalColumn: "SalonID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DayHours",
-                columns: table => new
-                {
-                    DayHoursID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OpenTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CloseTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SalonID = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DayHours", x => x.DayHoursID);
-                    table.ForeignKey(
-                        name: "FK_DayHours_Salons_SalonID",
-                        column: x => x.SalonID,
-                        principalTable: "Salons",
-                        principalColumn: "SalonID");
+                        name: "FK_Salons_Users_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Users",
+                        principalColumn: "UserID");
                 });
 
             migrationBuilder.CreateTable(
@@ -228,36 +232,6 @@ namespace Webapi.Migrations
                         principalColumn: "SalonID");
                     table.ForeignKey(
                         name: "FK_Reviews_Users_UserID",
-                        column: x => x.UserID,
-                        principalTable: "Users",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Appointments",
-                columns: table => new
-                {
-                    AppointmentID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    IsCanceled = table.Column<bool>(type: "bit", nullable: false),
-                    CalendarAppointmentURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AppointmentTypeID = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Appointments", x => x.AppointmentID);
-                    table.ForeignKey(
-                        name: "FK_Appointments_AppointmentTypes_AppointmentTypeID",
-                        column: x => x.AppointmentTypeID,
-                        principalTable: "AppointmentTypes",
-                        principalColumn: "AppointmentTypeID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Appointments_Users_UserID",
                         column: x => x.UserID,
                         principalTable: "Users",
                         principalColumn: "UserID",
@@ -300,6 +274,11 @@ namespace Webapi.Migrations
                 column: "SalonID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Pictures_SalonID",
+                table: "Pictures",
+                column: "SalonID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Reviews_SalonID",
                 table: "Reviews",
                 column: "SalonID");
@@ -320,6 +299,11 @@ namespace Webapi.Migrations
                 column: "SalonPicturePictureID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Salons_UserID",
+                table: "Salons",
+                column: "UserID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_ProfilePicturePictureID",
                 table: "Users",
                 column: "ProfilePicturePictureID");
@@ -328,10 +312,70 @@ namespace Webapi.Migrations
                 name: "IX_Users_UserCredentialsID",
                 table: "Users",
                 column: "UserCredentialsID");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Amentities_Pictures_IconPictureID",
+                table: "Amentities",
+                column: "IconPictureID",
+                principalTable: "Pictures",
+                principalColumn: "PictureID",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Amentities_Salons_SalonID",
+                table: "Amentities",
+                column: "SalonID",
+                principalTable: "Salons",
+                principalColumn: "SalonID");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Appointments_AppointmentTypes_AppointmentTypeID",
+                table: "Appointments",
+                column: "AppointmentTypeID",
+                principalTable: "AppointmentTypes",
+                principalColumn: "AppointmentTypeID",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Appointments_Users_UserID",
+                table: "Appointments",
+                column: "UserID",
+                principalTable: "Users",
+                principalColumn: "UserID",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AppointmentTypes_Salons_SalonID",
+                table: "AppointmentTypes",
+                column: "SalonID",
+                principalTable: "Salons",
+                principalColumn: "SalonID");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DayHours_Salons_SalonID",
+                table: "DayHours",
+                column: "SalonID",
+                principalTable: "Salons",
+                principalColumn: "SalonID");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Pictures_Salons_SalonID",
+                table: "Pictures",
+                column: "SalonID",
+                principalTable: "Salons",
+                principalColumn: "SalonID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Salons_Pictures_SalonPicturePictureID",
+                table: "Salons");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Users_Pictures_ProfilePicturePictureID",
+                table: "Users");
+
             migrationBuilder.DropTable(
                 name: "Amentities");
 
@@ -348,22 +392,22 @@ namespace Webapi.Migrations
                 name: "AppointmentTypes");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Promotions");
 
             migrationBuilder.DropTable(
-                name: "Promotions");
+                name: "Pictures");
 
             migrationBuilder.DropTable(
                 name: "Salons");
 
             migrationBuilder.DropTable(
-                name: "UserCredentials");
-
-            migrationBuilder.DropTable(
                 name: "Addresses");
 
             migrationBuilder.DropTable(
-                name: "Pictures");
+                name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "UserCredentials");
         }
     }
 }

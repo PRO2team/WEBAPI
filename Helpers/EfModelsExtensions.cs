@@ -13,6 +13,7 @@ namespace Webapi.Helpers
                 .Include(e => e.SalonPicture)
                 .Include(e => e.Amentities).ThenInclude(a => a.Icon)
                 .Include(e => e.OpenHours)
+                .Include(e => e.Portfolio)
                 .Include(e => e.Reviews).ThenInclude(r => r.User).ThenInclude(u => u.ProfilePicture)
                 .Include(e => e.Address);
         } 
@@ -35,6 +36,13 @@ namespace Webapi.Helpers
             return query
                 .Include(e => e.Promotion)
                 .Include(e => e.Appointments);
+        }  
+
+        public static IQueryable<User> IncludeAll(this IQueryable<User> query)
+        {
+            return query
+                .Include(e => e.ProfilePicture)
+                .Include(e => e.FavouriteSalons);
         }   
     }
 }
