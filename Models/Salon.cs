@@ -1,10 +1,31 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
-using Webapi.Contexts;
+﻿using Webapi.Helpers;
+
 namespace Webapi.Models
 {
     public class Salon
     {
+        public enum SalonTypes : int
+        {
+            [StringValue(nameof(Other))]
+            Other,
+            [StringValue(nameof(Hotel))]
+            Hotel,
+            [StringValue(nameof(Restaurant))]
+            Restaurant,
+            [StringValue(nameof(Salon))]
+            Salon,
+            [StringValue(nameof(Hospital))]
+            Hospital,
+            [StringValue(nameof(Fitness))]
+            Fitness,
+            [StringValue(nameof(Lecture))]
+            Lecture,
+            [StringValue(nameof(Master))]
+            Master,
+            [StringValue(nameof(Tour))]
+            Tour
+        }
+
         public Salon()
         {
             AppointmentTypes = new List<AppointmentType>();
@@ -18,6 +39,7 @@ namespace Webapi.Models
         public string Description { get; set; }
         public string OwnerPhoneNumber { get; set; }
         public string? WebsiteURL { get; set; }
+        public string SalonType { get; set; }
         public Address Address { get; set; }
         public virtual Picture? SalonPicture { get; set; }
         public virtual ICollection<AppointmentType> AppointmentTypes { get; set; }

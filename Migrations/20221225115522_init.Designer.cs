@@ -12,7 +12,7 @@ using Webapi.Contexts;
 namespace Webapi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221224184229_init")]
+    [Migration("20221225115522_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -278,6 +278,10 @@ namespace Webapi.Migrations
                     b.Property<int?>("SalonPicturePictureID")
                         .HasColumnType("int");
 
+                    b.Property<string>("SalonType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("WebsiteURL")
                         .HasColumnType("nvarchar(max)");
 
@@ -383,7 +387,7 @@ namespace Webapi.Migrations
             modelBuilder.Entity("Webapi.Models.Appointment", b =>
                 {
                     b.HasOne("Webapi.Models.AppointmentType", "AppointmentType")
-                        .WithMany()
+                        .WithMany("Appointments")
                         .HasForeignKey("AppointmentTypeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -466,6 +470,11 @@ namespace Webapi.Migrations
                     b.Navigation("ProfilePicture");
 
                     b.Navigation("UserCredentials");
+                });
+
+            modelBuilder.Entity("Webapi.Models.AppointmentType", b =>
+                {
+                    b.Navigation("Appointments");
                 });
 
             modelBuilder.Entity("Webapi.Models.Salon", b =>

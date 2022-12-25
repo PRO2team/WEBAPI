@@ -11,6 +11,7 @@ namespace Webapi.EfConfigurations
         {
             builder.HasKey(e => e.SalonID);
             builder.Property(e => e.Name).IsRequired();
+            builder.Property(e => e.SalonType).IsRequired();
             builder.Property(e => e.Description).IsRequired();
             builder.Property(e => e.OwnerPhoneNumber).IsRequired();
             builder.Property(e => e.WebsiteURL);

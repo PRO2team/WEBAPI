@@ -45,7 +45,11 @@ builder.Services.AddAuthentication(opt =>
 
 builder.Services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.Migrate();
 
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();

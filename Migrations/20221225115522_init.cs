@@ -82,6 +82,7 @@ namespace Webapi.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OwnerPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     WebsiteURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SalonType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AddressID = table.Column<int>(type: "int", nullable: false),
                     SalonPicturePictureID = table.Column<int>(type: "int", nullable: true)
                 },

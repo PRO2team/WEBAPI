@@ -8,7 +8,7 @@ using Webapi.Models.Requests;
 namespace Webapi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AppointmentsController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;

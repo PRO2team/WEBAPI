@@ -14,6 +14,8 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.Price).IsRequired();
 
             builder.HasOne(e => e.Promotion);
+
+            builder.HasMany(e => e.Appointments).WithOne(e => e.AppointmentType);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Webapi.Helpers
         {
             return query
                 .Include(e => e.AppointmentTypes).ThenInclude(at => at.Promotion)
+                .Include(e => e.AppointmentTypes).ThenInclude(at => at.Appointments)
                 .Include(e => e.SalonPicture)
                 .Include(e => e.Amentities).ThenInclude(a => a.Icon)
                 .Include(e => e.OpenHours)
@@ -32,7 +33,8 @@ namespace Webapi.Helpers
         public static IQueryable<AppointmentType> IncludeAll(this IQueryable<AppointmentType> query)
         {
             return query
-                .Include(e => e.Promotion);
+                .Include(e => e.Promotion)
+                .Include(e => e.Appointments);
         }   
     }
 }

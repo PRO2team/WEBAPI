@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Webapi.Contexts;
+using Webapi.Exceptions;
 using Webapi.Helpers;
 using Webapi.Models;
+using Webapi.Models.DTO;
 using Webapi.Models.Requests;
 
 namespace Webapi.Controllers
@@ -19,13 +22,14 @@ namespace Webapi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Salon>>> GetSalons()
+        public async Task<ActionResult<IEnumerable<SalonDto>>> GetSalons()
         {
-            return await _dbContext.Salons.IncludeAll().ToListAsync();
+            var salonsDto = await _dbContext.Salons.IncludeAll().Select(e => new SalonDto(e)).ToListAsync();
+            return salonsDto;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Salon>> GetSalon(int id)
+        public async Task<ActionResult<SalonDto>> GetSalon(int id)
         {
             var salon = await _dbContext.Salons.IncludeAll().FirstOrDefaultAsync(e => e.SalonID == id);
 
@@ -34,7 +38,7 @@ namespace Webapi.Controllers
                 return NotFound();
             }
 
-            return salon;
+            return new SalonDto(salon);
         }
 
         [HttpPut("{id}")]
@@ -43,12 +47,13 @@ namespace Webapi.Controllers
             var salon = await _dbContext.Salons.IncludeAll().FirstOrDefaultAsync(e => e.SalonID == id);
 
             if (salon is null) return NotFound();
-            if (addSalonRequest.OpenHours.Any(e => e.DayName.IsDayOfWeek() == false)) return BadRequest("Uknown day of the week" + Environment.NewLine + $"Possible values: {string.Join(',', UtilityExtensions.daysOfWeekNames)}");
+            ValidateSalonRequest(addSalonRequest);
 
             salon.Name = addSalonRequest.Name;
             salon.Description = addSalonRequest.Description;
             salon.OwnerPhoneNumber = addSalonRequest.OwnerPhoneNumber;
             salon.WebsiteURL = addSalonRequest.WebsiteURL;
+            salon.SalonType = addSalonRequest.SalonType;
             salon.Address = addSalonRequest.Address;
             salon.OpenHours = addSalonRequest.OpenHours;
 
@@ -76,7 +81,7 @@ namespace Webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<Salon>> PostSalon(AddSalonRequest addSalonRequest)
         {
-            if (addSalonRequest.OpenHours.Any(e => e.DayName.IsDayOfWeek() == false)) return BadRequest("Uknown day of the week" + Environment.NewLine + $"Possible values: {string.Join(',', UtilityExtensions.daysOfWeekNames)}");
+            ValidateSalonRequest(addSalonRequest);
 
             var salon = new Salon()
             {
@@ -84,6 +89,7 @@ namespace Webapi.Controllers
                 Description = addSalonRequest.Description,
                 OwnerPhoneNumber = addSalonRequest.OwnerPhoneNumber,
                 WebsiteURL = addSalonRequest.WebsiteURL,
+                SalonType = addSalonRequest.SalonType,
                 Address = addSalonRequest.Address,
                 OpenHours = addSalonRequest.OpenHours,
                 AppointmentTypes = new List<AppointmentType>(),
@@ -114,6 +120,11 @@ namespace Webapi.Controllers
         private bool SalonExists(int id)
         {
             return _dbContext.Salons.Any(e => e.SalonID == id);
+        }
+        private void ValidateSalonRequest(AddSalonRequest addSalonRequest)
+        {
+            if (!Enum.IsDefined(typeof(Salon.SalonTypes), addSalonRequest.SalonType)) throw new UndefinedSalonTypeException($"Uknown salon type\nPossible values: {string.Join(',', Enum.GetNames(typeof(Salon.SalonTypes)))}");
+            if (addSalonRequest.OpenHours.Any(e => e.DayName.IsDayOfWeek() == false)) throw new UndefinedDayOfWeekException($"Uknown day of the week\nPossible values: {string.Join(',', UtilityExtensions.daysOfWeekNames)}");
         }
     }
 }
