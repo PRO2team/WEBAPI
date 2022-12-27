@@ -35,6 +35,7 @@ namespace Webapi.Controllers
                 OwnerPhoneNumber = "+48793123456",
                 WebsiteURL = "doncapelli.com",
                 SalonType = "Salon",
+                Owner = user1,
                 SalonPicture = new Picture()
                 {
                     Bytes = TestImageBytes
@@ -169,6 +170,7 @@ namespace Webapi.Controllers
                 OwnerPhoneNumber = "+48793123456",
                 WebsiteURL = "medicover.com",
                 SalonType = "Hospital",
+                Owner = user1,
                 SalonPicture = new Picture()
                 {
                     Bytes = TestImageBytes
@@ -296,6 +298,7 @@ namespace Webapi.Controllers
                 OwnerPhoneNumber = "+48793123456",
                 WebsiteURL = "stadoruchu.com",
                 SalonType = "Fitness",
+                Owner = user1,
                 SalonPicture = new Picture()
                 {
                     Bytes = TestImageBytes

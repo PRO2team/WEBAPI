@@ -278,15 +278,15 @@ namespace Webapi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OwnerUserID")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SalonPicturePictureID")
                         .HasColumnType("int");
 
                     b.Property<string>("SalonType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserID")
-                        .HasColumnType("int");
 
                     b.Property<string>("WebsiteURL")
                         .HasColumnType("nvarchar(max)");
@@ -295,9 +295,9 @@ namespace Webapi.Migrations
 
                     b.HasIndex("AddressID");
 
-                    b.HasIndex("SalonPicturePictureID");
+                    b.HasIndex("OwnerUserID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("SalonPicturePictureID");
 
                     b.ToTable("Salons");
                 });
@@ -461,15 +461,19 @@ namespace Webapi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Webapi.Models.User", "Owner")
+                        .WithMany("FavouriteSalons")
+                        .HasForeignKey("OwnerUserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Webapi.Models.Picture", "SalonPicture")
                         .WithMany()
                         .HasForeignKey("SalonPicturePictureID");
 
-                    b.HasOne("Webapi.Models.User", null)
-                        .WithMany("FavouriteSalons")
-                        .HasForeignKey("UserID");
-
                     b.Navigation("Address");
+
+                    b.Navigation("Owner");
 
                     b.Navigation("SalonPicture");
                 });

@@ -17,6 +17,7 @@ namespace Webapi.EfConfigurations
             builder.Property(e => e.WebsiteURL);
 
             builder.HasOne(e => e.Address);
+            builder.HasOne(e => e.Owner);
             builder.HasOne(e => e.SalonPicture);
 
             builder.HasMany(e => e.AppointmentTypes);

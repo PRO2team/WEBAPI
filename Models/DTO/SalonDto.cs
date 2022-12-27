@@ -13,6 +13,7 @@
             AverageRating = salon.Reviews.Any() ? salon.Reviews.Select(e => e.Rating).Average() : null;
             AverageCheck = salon.AppointmentTypes.Any() ? salon.AppointmentTypes.Select(e => e.Price).Average() : null;
             Address = salon.Address;
+            Owner = salon.Owner;
             SalonPicture = salon.SalonPicture;
             AppointmentTypes = salon.AppointmentTypes;
             Amentities = salon.Amentities;
@@ -30,6 +31,7 @@
         public double? AverageRating { get; set; }
         public decimal? AverageCheck { get; set; }
         public Address Address { get; set; }
+        public User Owner { get; set; }
         public virtual Picture? SalonPicture { get; set; }
         public virtual ICollection<AppointmentType> AppointmentTypes { get; set; }
         public virtual ICollection<Amentity> Amentities { get; set; }

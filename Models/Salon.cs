@@ -42,6 +42,7 @@ namespace Webapi.Models
         public string? WebsiteURL { get; set; }
         public string SalonType { get; set; }
         public Address Address { get; set; }
+        public User Owner { get; set; }
         public virtual Picture? SalonPicture { get; set; }
         public virtual ICollection<Picture> Portfolio { get; set; }
         public virtual ICollection<AppointmentType> AppointmentTypes { get; set; }

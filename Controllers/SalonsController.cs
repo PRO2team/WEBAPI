@@ -81,6 +81,9 @@ namespace Webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<Salon>> PostSalon(AddSalonRequest addSalonRequest)
         {
+            var owner = _dbContext.Users.FirstOrDefault(e => e.UserID == addSalonRequest.OwnerUserID); 
+            if (owner == null) return NotFound("Such user id could not be found");
+
             ValidateSalonRequest(addSalonRequest);
 
             var salon = new Salon()
@@ -95,7 +98,8 @@ namespace Webapi.Controllers
                 AppointmentTypes = new List<AppointmentType>(),
                 Amentities = new List<Amentity>(),
                 Portfolio = new List<Picture>(),
-                Reviews = new List<Review>()
+                Reviews = new List<Review>(),
+                Owner = owner
             };
 
             _dbContext.Salons.Add(salon);

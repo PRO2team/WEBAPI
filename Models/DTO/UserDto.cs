@@ -12,6 +12,7 @@
             Birthdate = user.Birthdate;
             ProfilePicture = user.ProfilePicture;
             FavouriteSalons = new List<SalonDto>();
+            OwnedSalons = new List<SalonDto>();
         }
 
         public int UserID { get; set; }
@@ -22,6 +23,7 @@
         public DateTime? Birthdate { get; set; }
         public virtual Picture? ProfilePicture { get; set; }
         public virtual ICollection<SalonDto> FavouriteSalons { get; set; }
+        public virtual ICollection<SalonDto> OwnedSalons { get; set; }
 
     }
 }

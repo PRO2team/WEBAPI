@@ -15,7 +15,8 @@ namespace Webapi.Helpers
                 .Include(e => e.OpenHours)
                 .Include(e => e.Portfolio)
                 .Include(e => e.Reviews).ThenInclude(r => r.User).ThenInclude(u => u.ProfilePicture)
-                .Include(e => e.Address);
+                .Include(e => e.Address)
+                .Include(e => e.Owner);
         } 
         
         public static IQueryable<Appointment> IncludeAll(this IQueryable<Appointment> query)

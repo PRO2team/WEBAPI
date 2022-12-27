@@ -186,8 +186,8 @@ namespace Webapi.Migrations
                     WebsiteURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SalonType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AddressID = table.Column<int>(type: "int", nullable: false),
-                    SalonPicturePictureID = table.Column<int>(type: "int", nullable: true),
-                    UserID = table.Column<int>(type: "int", nullable: true)
+                    OwnerUserID = table.Column<int>(type: "int", nullable: false),
+                    SalonPicturePictureID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -204,10 +204,11 @@ namespace Webapi.Migrations
                         principalTable: "Pictures",
                         principalColumn: "PictureID");
                     table.ForeignKey(
-                        name: "FK_Salons_Users_UserID",
-                        column: x => x.UserID,
+                        name: "FK_Salons_Users_OwnerUserID",
+                        column: x => x.OwnerUserID,
                         principalTable: "Users",
-                        principalColumn: "UserID");
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -294,14 +295,14 @@ namespace Webapi.Migrations
                 column: "AddressID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Salons_OwnerUserID",
+                table: "Salons",
+                column: "OwnerUserID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Salons_SalonPicturePictureID",
                 table: "Salons",
                 column: "SalonPicturePictureID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Salons_UserID",
-                table: "Salons",
-                column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_ProfilePicturePictureID",
