@@ -63,6 +63,36 @@ namespace Webapi.Controllers
             return CreatedAtAction("GetAppointment", new { id = appointment.AppointmentID }, appointment);
         }
 
+        [HttpPost("list")]
+        public async Task<ActionResult<Appointment>> PostAppointments(List<AddAppointmentRequest> addAppointmentRequests)
+        {
+            foreach (var addAppointmentRequest in addAppointmentRequests)
+            {
+                var appointmentType = await _dbContext.AppointmentTypes.FirstOrDefaultAsync(e => e.AppointmentTypeID == addAppointmentRequest.AppointmentTypeID);
+                var user = await _dbContext.Users.FirstOrDefaultAsync(e => e.UserID == addAppointmentRequest.UserID);
+
+                if (appointmentType is null || user is null)
+                {
+                    return NotFound();
+                }
+
+                var appointment = new Appointment()
+                {
+                    Date = DateTime.Now,
+                    IsConfirmed = false,
+                    IsCanceled = false,
+                    CalendarAppointmentURL = "todo: use google calendar api to create new appointment",
+                    AppointmentType = appointmentType,
+                    User = user
+                };
+                _dbContext.Appointments.Add(appointment);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAppointment(int id)
         {
