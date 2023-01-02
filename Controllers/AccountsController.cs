@@ -65,6 +65,20 @@ namespace Webapi.Controllers
             return userDto;
         }
 
+        [HttpGet("appointments/{userId}")]
+        public async Task<ActionResult<List<Appointment>>> GetUserAppointments(int userId)
+        {
+            var user = await _dbContext.Users.IncludeAll().FirstOrDefaultAsync(e => e.UserID == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var appointments = await _dbContext.Appointments.Where(e => e.User.UserID == userId).Include(e => e.AppointmentType).ToListAsync();
+
+            return appointments;
+        }
+
         [HttpPost("favourites/{userId}/{salonId}")]
         public async Task<ActionResult<User>> FavouritesAddSalon(int userId, int salonId)
         {
