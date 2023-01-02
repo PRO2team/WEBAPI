@@ -65,7 +65,7 @@ namespace Webapi.Controllers
             return userDto;
         }
 
-        [HttpGet("appointments/{userId}")]
+        [HttpGet("{userId}/appointments/")]
         public async Task<ActionResult<List<Appointment>>> GetUserAppointments(int userId)
         {
             var user = await _dbContext.Users.IncludeAll().FirstOrDefaultAsync(e => e.UserID == userId);
