@@ -147,6 +147,7 @@ namespace Webapi.Controllers
             return Ok(new
             {
                 accessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
+                user.UserID,
                 user.UserCredentials.Login,
                 user.UserCredentials.UserRole,
                 user.Name,
