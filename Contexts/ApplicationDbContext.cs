@@ -16,6 +16,8 @@ namespace Webapi.Contexts
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Salon> Salons { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Email> Emails { get; set; }
+        public DbSet<ApplicationForm> ApplicationForms { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options){}
     }
