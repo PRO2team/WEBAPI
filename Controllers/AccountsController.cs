@@ -49,17 +49,9 @@ namespace Webapi.Controllers
                 return NotFound();
             }
 
-            var favSalons = _dbContext.Salons
-                .Include(e => e.AppointmentTypes)
-                .Include(e => e.SalonPicture)
-                .Include(e => e.Reviews)
-                .Include(e => e.Address)
-            .Where(e => user.FavouriteSalons.Select(e => e.SalonID).Contains(e.SalonID)).Select(e => new SalonDto(e)).ToList();
-
-            var ownedSalons = _dbContext.Salons.IncludeAll().Where(e => e.Owner.UserID == user.UserID).Select(e => new SalonDto(e)).ToList();
+            var ownedSalons = _dbContext.Salons.Where(e => e.Owner.UserID == user.UserID).Select(e => new SalonDto(e)).ToList();
 
             var userDto = new UserDto(user);
-            userDto.FavouriteSalons = favSalons;
             userDto.OwnedSalons = ownedSalons;
 
             return userDto;

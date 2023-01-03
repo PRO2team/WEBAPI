@@ -39,5 +39,14 @@ namespace Webapi.Controllers
             await _dbContext.SaveChangesAsync();
             return Ok();
         }
+
+        [HttpPost("contact")]
+        public async Task<ActionResult> AddContactForm(ContactForm contactForm)
+        {
+            _dbContext.ContactForms.Add(contactForm);
+
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
