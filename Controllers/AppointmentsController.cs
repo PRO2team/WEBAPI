@@ -53,6 +53,7 @@ namespace Webapi.Controllers
                 Date = DateTime.Now,
                 IsConfirmed = false,
                 IsCanceled = false,
+                NoteForSalon = addAppointmentRequest.NoteForSalon,
                 CalendarAppointmentURL = "todo: use google calendar api to create new appointment",
                 AppointmentType = appointmentType,
                 User = user
@@ -81,6 +82,7 @@ namespace Webapi.Controllers
                     Date = DateTime.Now,
                     IsConfirmed = false,
                     IsCanceled = false,
+                    NoteForSalon = addAppointmentRequest.NoteForSalon,
                     CalendarAppointmentURL = "todo: use google calendar api to create new appointment",
                     AppointmentType = appointmentType,
                     User = user
@@ -91,6 +93,21 @@ namespace Webapi.Controllers
             await _dbContext.SaveChangesAsync();
 
             return Ok();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAppointments()
+        {
+            var appointments = await _dbContext.Appointments.IncludeAll().ToListAsync();
+            if (appointments == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Appointments.RemoveRange(appointments);
+            await _dbContext.SaveChangesAsync();
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
