@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Webapi.Contexts;
 
@@ -11,9 +12,10 @@ using Webapi.Contexts;
 namespace Webapi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230103120518_AddNote")]
+    partial class AddNote
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,51 +81,6 @@ namespace Webapi.Migrations
                     b.HasIndex("SalonID");
 
                     b.ToTable("Amentities");
-                });
-
-            modelBuilder.Entity("Webapi.Models.ApplicationForm", b =>
-                {
-                    b.Property<int>("ApplicationFormID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApplicationFormID"), 1L, 1);
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Number")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Organization")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationAdress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationContact")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ApplicationFormID");
-
-                    b.ToTable("ApplicationForms");
                 });
 
             modelBuilder.Entity("Webapi.Models.Appointment", b =>
@@ -199,35 +156,6 @@ namespace Webapi.Migrations
                     b.ToTable("AppointmentTypes");
                 });
 
-            modelBuilder.Entity("Webapi.Models.ContactForm", b =>
-                {
-                    b.Property<int>("ContactFormID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ContactFormID"), 1L, 1);
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ContactFormID");
-
-                    b.ToTable("ContactForms");
-                });
-
             modelBuilder.Entity("Webapi.Models.DayHours", b =>
                 {
                     b.Property<int>("DayHoursID")
@@ -254,23 +182,6 @@ namespace Webapi.Migrations
                     b.HasIndex("SalonID");
 
                     b.ToTable("DayHours");
-                });
-
-            modelBuilder.Entity("Webapi.Models.Email", b =>
-                {
-                    b.Property<int>("EmailID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmailID"), 1L, 1);
-
-                    b.Property<string>("EmailAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("EmailID");
-
-                    b.ToTable("Emails");
                 });
 
             modelBuilder.Entity("Webapi.Models.Picture", b =>

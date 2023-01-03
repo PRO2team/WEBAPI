@@ -7,6 +7,7 @@
         public bool IsConfirmed { get; set; }
         public bool IsCanceled { get; set; }
         public string CalendarAppointmentURL { get; set; }
+        public string NoteForSalon { get; set; }
         public AppointmentType AppointmentType { get; set; }
         public User User { get; set; }
     }
