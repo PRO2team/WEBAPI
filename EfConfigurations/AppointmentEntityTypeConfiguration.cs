@@ -10,7 +10,7 @@ namespace Webapi.EfConfigurations
         public void Configure(EntityTypeBuilder<Appointment> builder)
         {
             builder.HasKey(e => e.AppointmentID);
-            builder.Property(e => e.Date).IsRequired();
+            builder.Property(e => e.DateFrom).IsRequired();;
             builder.Property(e => e.IsConfirmed).IsRequired();
             builder.Property(e => e.IsCanceled).IsRequired();
             builder.Property(e => e.CalendarAppointmentURL).IsRequired();

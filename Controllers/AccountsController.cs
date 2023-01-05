@@ -50,8 +50,10 @@ namespace Webapi.Controllers
             }
 
             var ownedSalons = _dbContext.Salons.Where(e => e.Owner.UserID == user.UserID).Select(e => new SalonDto(e)).ToList();
+            var totalSpent = _dbContext.Appointments.Include(e => e.User).Include(e => e.AppointmentType).Where(e => e.User.UserID == userId).Sum(e => e.AppointmentType.Price);
 
             var userDto = new UserDto(user);
+            userDto.TotalSpent = totalSpent;
             userDto.OwnedSalons = ownedSalons;
 
             return userDto;
@@ -150,6 +152,7 @@ namespace Webapi.Controllers
                 user.UserID,
                 user.UserCredentials.Login,
                 user.UserCredentials.UserRole,
+                RefreshToken = user.UserCredentials.RefreshTokenExpirationDate > DateTime.Now ? user.UserCredentials.RefreshToken : null,
                 user.Name,
                 user.Surname,
                 user.PhoneNumber,

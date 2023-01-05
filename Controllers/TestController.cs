@@ -76,7 +76,8 @@ namespace Webapi.Controllers
                             {
                                 new Appointment()
                                 {
-                                    Date = DateTime.Today,
+                                    DateFrom = DateTime.Today,
+                                    DateTo = DateTime.Today.AddMinutes(45),
                                     IsConfirmed = true,
                                     CalendarAppointmentURL = "todo",
                                     User = user1
@@ -213,7 +214,8 @@ namespace Webapi.Controllers
                             {
                                 new Appointment()
                                 {
-                                    Date = DateTime.Today,
+                                    DateFrom = DateTime.Today,
+                                    DateTo = DateTime.Today.AddMinutes(45),
                                     IsConfirmed = true,
                                     CalendarAppointmentURL = "todo",
                                     User = user1
@@ -328,7 +330,8 @@ namespace Webapi.Controllers
                             {
                                 new Appointment()
                                 {
-                                    Date = DateTime.Today.AddDays(-7),
+                                    DateFrom = DateTime.Today.AddDays(-7),
+                                    DateTo = DateTime.Today.AddDays(-7).AddMinutes(60),
                                     IsConfirmed = true,
                                     CalendarAppointmentURL = "todo",
                                     User = user1
