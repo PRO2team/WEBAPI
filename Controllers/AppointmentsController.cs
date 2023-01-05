@@ -50,7 +50,8 @@ namespace Webapi.Controllers
 
             var appointment = new Appointment()
             {
-                Date = DateTime.Now,
+                DateFrom = addAppointmentRequest.Date,
+                DateTo = addAppointmentRequest.Date.AddMinutes(appointmentType.LengthMinutes),
                 IsConfirmed = false,
                 IsCanceled = false,
                 NoteForSalon = addAppointmentRequest.NoteForSalon,
@@ -79,7 +80,8 @@ namespace Webapi.Controllers
 
                 var appointment = new Appointment()
                 {
-                    Date = DateTime.Now,
+                    DateFrom = addAppointmentRequest.Date,
+                    DateTo = addAppointmentRequest.Date.AddMinutes(appointmentType.LengthMinutes),
                     IsConfirmed = false,
                     IsCanceled = false,
                     NoteForSalon = addAppointmentRequest.NoteForSalon,
