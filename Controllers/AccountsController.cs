@@ -218,7 +218,7 @@ namespace Webapi.Controllers
         [HttpPut("{userId}")]
         public async Task<ActionResult> UpdateUser(int userId, UpdateUserRequest updateRequest)
         {
-            User user = _dbContext.Users.Include(e => e.UserCredentials).Where(user => user.UserID == userId).FirstOrDefault();
+            var user = _dbContext.Users.FirstOrDefault(user => user.UserID == userId);
             if (user == default) return NotFound();
             try
             {
@@ -226,13 +226,10 @@ namespace Webapi.Controllers
                 user.Surname = updateRequest.Surname;
                 user.PhoneNumber = updateRequest.PhoneNumber;
                 user.Birthdate = updateRequest.Birthdate;
+                user.ProfilePicture = updateRequest.ProfilePicture;
 
                 _dbContext.Entry(user).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
-            }
-            catch (UndefinedUserRoleException)
-            {
-                return StatusCode(422, "Undefined user role occured");
             }catch (Exception e)
             {
                 return StatusCode(500, e.Message);

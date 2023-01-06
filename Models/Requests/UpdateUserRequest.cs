@@ -10,5 +10,6 @@ namespace Webapi.Models.Requests
         public string? Surname { get; set; }
         public string? PhoneNumber { get; set; }
         public DateTime? Birthdate { get; set; }
+        public Picture? ProfilePicture { get; set; }
     }
 }
