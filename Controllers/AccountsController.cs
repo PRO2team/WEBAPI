@@ -14,6 +14,7 @@ using Webapi.Helpers;
 using Webapi.Models;
 using Webapi.Models.DTO;
 using Webapi.Models.Requests;
+using static Webapi.Models.UserCredentials;
 
 namespace Webapi.Controllers
 {
@@ -201,6 +202,32 @@ namespace Webapi.Controllers
                 user = CreateUser(registerRequest);
 
                 await _dbContext.AddAsync(user);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (UndefinedUserRoleException)
+            {
+                return StatusCode(422, "Undefined user role occured");
+            }catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+            return Ok(user);
+        }
+
+        [HttpPut("{userId}")]
+        public async Task<ActionResult> UpdateUser(int userId, UpdateUserRequest updateRequest)
+        {
+            User user = _dbContext.Users.Include(e => e.UserCredentials).Where(user => user.UserID == userId).FirstOrDefault();
+            if (user == default) return NotFound();
+            try
+            {
+                user.Name = updateRequest.Name;
+                user.Surname = updateRequest.Surname;
+                user.PhoneNumber = updateRequest.PhoneNumber;
+                user.Birthdate = updateRequest.Birthdate;
+
+                _dbContext.Entry(user).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
             }
             catch (UndefinedUserRoleException)
