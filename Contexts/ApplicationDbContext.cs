@@ -19,6 +19,7 @@ namespace Webapi.Contexts
         public DbSet<Email> Emails { get; set; }
         public DbSet<ApplicationForm> ApplicationForms { get; set; }
         public DbSet<ContactForm> ContactForms { get; set; }
+        public DbSet<UserFavouriteSalon> UserFavouriteSalons { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options){}
     }

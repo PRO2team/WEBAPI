@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -81,10 +82,7 @@ namespace Webapi.Controllers
                 return NotFound();
             }
 
-
-            var favSalonsIds = user.FavouriteSalons.Select(e => e.SalonID).Distinct();
-
-            var salons = _dbContext.Salons.Where(e => favSalonsIds.Contains(e.SalonID)).Select(e => new {
+            var salons = _dbContext.Salons.Where(e => user.FavouriteSalons.Select(e => e.SalonID).Contains(e.SalonID)).Select(e => new {
                 e.SalonID,
                 e.Name,
                 e.Description,
@@ -113,12 +111,17 @@ namespace Webapi.Controllers
                 return NotFound($"Salon id {salonId} could not be found");
             }
 
-            if(user.FavouriteSalons.Any(e => e.SalonID == salonId))
+            if(user.FavouriteSalons.Select(e => e.SalonID).Contains(salonId))
             {
                 return StatusCode(409, "Such salon has already been added to favourites");
             }
 
-            user.FavouriteSalons.Add(salon);
+            var favouriteSalon = new UserFavouriteSalon()
+            {
+                SalonID = salonId
+            };
+
+            user.FavouriteSalons.Add(favouriteSalon);
 
             _dbContext.Entry(user).State = EntityState.Modified;
 
@@ -142,12 +145,13 @@ namespace Webapi.Controllers
                 return NotFound($"Salon id {salonId} could not be found");
             }
 
-            if(!user.FavouriteSalons.Any(e => e.SalonID == salonId))
+            if(!user.FavouriteSalons.Select(e => e.SalonID).Contains(salonId))
             {
                 return NotFound("User does not have such a salon on the favorites list");
             }
 
-            user.FavouriteSalons.Remove(salon);
+            var favouriteSalon = user.FavouriteSalons.FirstOrDefault(e => e.SalonID == salonId);
+            user.FavouriteSalons.Remove(favouriteSalon);
 
             _dbContext.Entry(user).State = EntityState.Modified;
 

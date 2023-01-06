@@ -16,8 +16,6 @@ namespace Webapi.EfConfigurations
 
             builder.HasOne(e => e.UserCredentials);
             builder.HasOne(c => c.ProfilePicture);
-
-            builder.HasMany(c => c.FavouriteSalons);
         }
     }
 }

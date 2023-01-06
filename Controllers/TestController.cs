@@ -80,7 +80,8 @@ namespace Webapi.Controllers
                                     DateTo = DateTime.Today.AddMinutes(45),
                                     IsConfirmed = true,
                                     CalendarAppointmentURL = "todo",
-                                    User = user1
+                                    User = user1,
+                                    NoteForSalon = ""
                                 }
                             }
                         },
@@ -162,7 +163,6 @@ namespace Webapi.Controllers
                     }
                 }
             };
-            user1.FavouriteSalons.Add(salon1);
 
             var salon2 = new Salon()
             {
@@ -218,7 +218,8 @@ namespace Webapi.Controllers
                                     DateTo = DateTime.Today.AddMinutes(45),
                                     IsConfirmed = true,
                                     CalendarAppointmentURL = "todo",
-                                    User = user1
+                                    User = user1,
+                                    NoteForSalon = ""
                                 }
                             }
                         },
@@ -334,7 +335,8 @@ namespace Webapi.Controllers
                                     DateTo = DateTime.Today.AddDays(-7).AddMinutes(60),
                                     IsConfirmed = true,
                                     CalendarAppointmentURL = "todo",
-                                    User = user1
+                                    User = user1,
+                                    NoteForSalon = ""
                                 }
                             }
                         },
@@ -424,11 +426,16 @@ namespace Webapi.Controllers
             _dbContext.Promotions.RemoveRange(_dbContext.Promotions);
             _dbContext.Addresses.RemoveRange(_dbContext.Addresses);
             _dbContext.UserCredentials.RemoveRange(_dbContext.UserCredentials);
+            _dbContext.UserFavouriteSalons.RemoveRange(_dbContext.UserFavouriteSalons);
             _dbContext.Users.RemoveRange(_dbContext.Users);
             _dbContext.Reviews.RemoveRange(_dbContext.Reviews);
             _dbContext.Appointments.RemoveRange(_dbContext.Appointments);
             _dbContext.AppointmentTypes.RemoveRange(_dbContext.AppointmentTypes);
             _dbContext.Salons.RemoveRange(_dbContext.Salons);
+            _dbContext.Emails.RemoveRange(_dbContext.Emails);
+            _dbContext.ApplicationForms.RemoveRange(_dbContext.ApplicationForms);
+            _dbContext.ContactForms.RemoveRange(_dbContext.ContactForms);
+
             await _dbContext.SaveChangesAsync();
             return Ok();
         }

@@ -4,7 +4,7 @@
     {
         public User()
         {
-            FavouriteSalons = new List<Salon>();
+            FavouriteSalons = new List<UserFavouriteSalon>();
         }
 
         public int UserID { get; set; }
@@ -15,6 +15,6 @@
         public DateTime? Birthdate { get; set; }
         public UserCredentials UserCredentials { get; set; }
         public virtual Picture? ProfilePicture { get; set; }
-        public virtual ICollection<Salon> FavouriteSalons { get; set; }
+        public virtual ICollection<UserFavouriteSalon> FavouriteSalons { get; set; }
     }
 }
