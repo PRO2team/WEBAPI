@@ -52,11 +52,13 @@ namespace Webapi.Controllers
             }
 
             var ownedSalons = _dbContext.Salons.Where(e => e.Owner.UserID == user.UserID).Select(e => new SalonDto(e)).ToList();
-            var totalSpent = _dbContext.Appointments.Include(e => e.User).Include(e => e.AppointmentType).Where(e => e.User.UserID == userId).Sum(e => e.AppointmentType.Price);
+            var appointments = _dbContext.Appointments.Include(e => e.User).Include(e => e.AppointmentType).Where(e => e.User.UserID == userId).ToList();
+            var totalSpent = appointments.Sum(e => e.AppointmentType.Price);
 
             var userDto = new UserDto(user);
-            userDto.TotalSpent = totalSpent;
             userDto.OwnedSalons = ownedSalons;
+            userDto.Appointments = appointments;
+            userDto.TotalSpent = totalSpent;
 
             return userDto;
         }
