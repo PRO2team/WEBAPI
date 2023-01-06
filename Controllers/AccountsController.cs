@@ -72,6 +72,31 @@ namespace Webapi.Controllers
 
             return appointments;
         }
+        [HttpGet("{userId}/favourites")]
+        public async Task<ActionResult> GetUserFavouriteSalons(int userId)
+        {
+            var user = await _dbContext.Users.Include(e => e.FavouriteSalons).FirstOrDefaultAsync(e => e.UserID == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+
+            var favSalonsIds = user.FavouriteSalons.Select(e => e.SalonID).Distinct();
+
+            var salons = _dbContext.Salons.Where(e => favSalonsIds.Contains(e.SalonID)).Select(e => new {
+                e.SalonID,
+                e.Name,
+                e.Description,
+                e.OwnerPhoneNumber,
+                e.WebsiteURL,
+                e.SalonType,
+                e.Address,
+                e.SalonPicture
+            });
+
+            return Ok(salons);
+        }
 
         [HttpPost("favourites/{userId}/{salonId}")]
         public async Task<ActionResult<User>> FavouritesAddSalon(int userId, int salonId)
