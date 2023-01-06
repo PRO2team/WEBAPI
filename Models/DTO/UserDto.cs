@@ -24,6 +24,7 @@
         public virtual Picture? ProfilePicture { get; set; }
         public virtual ICollection<SalonDto> FavouriteSalons { get; set; }
         public virtual ICollection<SalonDto> OwnedSalons { get; set; }
+        public virtual ICollection<Appointment> Appointments { get; set; }
 
     }
 }
