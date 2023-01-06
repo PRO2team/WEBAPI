@@ -18,10 +18,12 @@ else if(environment == "Development")
 {
     connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
     secretKey = builder.Configuration["SecretKey"];
+
 }
 else
 {
     throw new Exception("Unknown environment");
+
 }
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
@@ -29,6 +31,7 @@ builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
 }).AddJwtBearer(opt =>
 {
     opt.TokenValidationParameters = new TokenValidationParameters
@@ -58,8 +61,8 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 app.UseCors(
-    options => options.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()
-);
+    options => options.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials()
+) ;
 
 app.UseExceptionLoggerMiddleware();
 app.UseDeveloperExceptionPage();
