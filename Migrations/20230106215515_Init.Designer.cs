@@ -12,8 +12,8 @@ using Webapi.Contexts;
 namespace Webapi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230103160030_AddedNewModels")]
-    partial class AddedNewModels
+    [Migration("20230106215515_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -143,7 +143,10 @@ namespace Webapi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("DateFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateTo")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCanceled")
@@ -151,6 +154,10 @@ namespace Webapi.Migrations
 
                     b.Property<bool>("IsConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("NoteForSalon")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
@@ -195,6 +202,35 @@ namespace Webapi.Migrations
                     b.HasIndex("SalonID");
 
                     b.ToTable("AppointmentTypes");
+                });
+
+            modelBuilder.Entity("Webapi.Models.ContactForm", b =>
+                {
+                    b.Property<int>("ContactFormID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ContactFormID"), 1L, 1);
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ContactFormID");
+
+                    b.ToTable("ContactForms");
                 });
 
             modelBuilder.Entity("Webapi.Models.DayHours", b =>
@@ -441,6 +477,27 @@ namespace Webapi.Migrations
                     b.ToTable("UserCredentials");
                 });
 
+            modelBuilder.Entity("Webapi.Models.UserFavouriteSalon", b =>
+                {
+                    b.Property<int>("UserFavouriteSalonID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserFavouriteSalonID"), 1L, 1);
+
+                    b.Property<int>("SalonID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserFavouriteSalonID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserFavouriteSalons");
+                });
+
             modelBuilder.Entity("Webapi.Models.Amentity", b =>
                 {
                     b.HasOne("Webapi.Models.Picture", "Icon")
@@ -526,7 +583,7 @@ namespace Webapi.Migrations
                         .IsRequired();
 
                     b.HasOne("Webapi.Models.User", "Owner")
-                        .WithMany("FavouriteSalons")
+                        .WithMany()
                         .HasForeignKey("OwnerUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -557,6 +614,13 @@ namespace Webapi.Migrations
                     b.Navigation("ProfilePicture");
 
                     b.Navigation("UserCredentials");
+                });
+
+            modelBuilder.Entity("Webapi.Models.UserFavouriteSalon", b =>
+                {
+                    b.HasOne("Webapi.Models.User", null)
+                        .WithMany("FavouriteSalons")
+                        .HasForeignKey("UserID");
                 });
 
             modelBuilder.Entity("Webapi.Models.AppointmentType", b =>

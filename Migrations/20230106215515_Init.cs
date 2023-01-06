@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Webapi.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,6 +24,55 @@ namespace Webapi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Addresses", x => x.AddressID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApplicationForms",
+                columns: table => new
+                {
+                    ApplicationFormID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Number = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Organization = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganizationContact = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganizationAdress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationForms", x => x.ApplicationFormID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContactForms",
+                columns: table => new
+                {
+                    ContactFormID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContactForms", x => x.ContactFormID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Emails",
+                columns: table => new
+                {
+                    EmailID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmailAddress = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Emails", x => x.EmailID);
                 });
 
             migrationBuilder.CreateTable(
@@ -80,10 +129,12 @@ namespace Webapi.Migrations
                 {
                     AppointmentID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateFrom = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateTo = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     IsCanceled = table.Column<bool>(type: "bit", nullable: false),
                     CalendarAppointmentURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NoteForSalon = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AppointmentTypeID = table.Column<int>(type: "int", nullable: false),
                     UserID = table.Column<int>(type: "int", nullable: false)
                 },
@@ -212,6 +263,25 @@ namespace Webapi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserFavouriteSalons",
+                columns: table => new
+                {
+                    UserFavouriteSalonID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SalonID = table.Column<int>(type: "int", nullable: false),
+                    UserID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserFavouriteSalons", x => x.UserFavouriteSalonID);
+                    table.ForeignKey(
+                        name: "FK_UserFavouriteSalons_Users_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Users",
+                        principalColumn: "UserID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reviews",
                 columns: table => new
                 {
@@ -305,6 +375,11 @@ namespace Webapi.Migrations
                 column: "SalonPicturePictureID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserFavouriteSalons_UserID",
+                table: "UserFavouriteSalons",
+                column: "UserID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_ProfilePicturePictureID",
                 table: "Users",
                 column: "ProfilePicturePictureID");
@@ -381,13 +456,25 @@ namespace Webapi.Migrations
                 name: "Amentities");
 
             migrationBuilder.DropTable(
+                name: "ApplicationForms");
+
+            migrationBuilder.DropTable(
                 name: "Appointments");
+
+            migrationBuilder.DropTable(
+                name: "ContactForms");
 
             migrationBuilder.DropTable(
                 name: "DayHours");
 
             migrationBuilder.DropTable(
+                name: "Emails");
+
+            migrationBuilder.DropTable(
                 name: "Reviews");
+
+            migrationBuilder.DropTable(
+                name: "UserFavouriteSalons");
 
             migrationBuilder.DropTable(
                 name: "AppointmentTypes");
