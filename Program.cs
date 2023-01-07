@@ -61,7 +61,7 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 app.UseCors(
-    options => options.WithOrigins("https://pro2team.github.io").AllowAnyMethod().AllowAnyHeader().AllowCredentials()
+    options => options.WithOrigins("https://pro2team.github.io", "http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials()
 ) ;
 
 app.UseExceptionLoggerMiddleware();
