@@ -24,8 +24,9 @@ namespace Webapi.Controllers
     {
         private const int ACCESS_TOKEN_LIFETIME = 20; //minutes
         private const int REFRESH_TOKEN_LIFETIME = 1; //days
-
         private const int SALT_LENGTH = 32; //bytes
+        
+        private static readonly byte[] DefaultImageBytes = Convert.FromBase64String(@"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");
 
         private readonly ApplicationDbContext _dbContext;
         private readonly IConfiguration _config;
@@ -282,7 +283,11 @@ namespace Webapi.Controllers
                 Name = registerRequest.Name,
                 Surname = registerRequest.Surname,
                 Birthdate = registerRequest.Birthdate,
-                PhoneNumber = registerRequest.PhoneNumber
+                PhoneNumber = registerRequest.PhoneNumber,
+                ProfilePicture = new Picture()
+                {
+                    Bytes = DefaultImageBytes
+                }
             };
 
             return newUser;
