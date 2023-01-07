@@ -61,7 +61,7 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 app.UseCors(
-    options => options.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials()
+    options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials()
 ) ;
 
 app.UseExceptionLoggerMiddleware();
