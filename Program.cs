@@ -40,8 +40,8 @@ builder.Services.AddAuthentication(opt =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero,
-        ValidIssuer = "https://bebrawebapi.azurewebsites.net/",
-        ValidAudience = "https://bebrawebapi.azurewebsites.net/",
+        ValidIssuer = "https://bebra.azurewebsites.net/",
+        ValidAudience = "https://bebra.azurewebsites.net/",
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
     };
 });
